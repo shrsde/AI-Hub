@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface2: #f0eeea;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #1a1916;
+    --muted: #6b6860;
+    --accent: #2d7a1f;
+    --accent2: #1563a8;
+    --accent3: #b85c00;
+    --accent4: #6b22c4;
+    --red: #c0392b;
+    --green: #1a7a3f;
+    --r: 10px;
+    --r-sm: 6px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(247,246,243,0.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto; padding: 0 24px;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 15px; font-weight: 600;
+    color: var(--accent); letter-spacing: -0.02em;
+    white-space: nowrap; padding: 16px 24px 16px 0;
+    border-right: 1px solid var(--border); margin-right: 8px;
+  }
+  .nav-btn {
+    padding: 16px 14px; font-size: 12px; font-weight: 400;
+    color: var(--muted); cursor: pointer; border: none;
+    background: none; white-space: nowrap; transition: color .2s;
+    letter-spacing: 0.02em; font-family: 'DM Sans', sans-serif;
+  }
+  .nav-btn:hover, .nav-btn.active { color: var(--text); }
+  .nav-btn.active { color: var(--accent); }
+
+  /* SECTIONS */
+  section { display: none; min-height: 100vh; padding: 48px 24px 80px; max-width: 900px; margin: 0 auto; }
+  section.active { display: block; }
+
+  /* TYPOGRAPHY */
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-size: clamp(28px, 5vw, 44px);
+    font-weight: 300; line-height: 1.15; letter-spacing: -0.03em;
+    color: var(--text); margin-bottom: 16px;
+  }
+  h1 em { font-style: italic; color: var(--accent4); }
+  h2 {
+    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300;
+    letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px;
+  }
+  h3 {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px;
+  }
+  .lead {
+    font-size: 17px; color: var(--muted); line-height: 1.75;
+    max-width: 640px; margin-bottom: 48px;
+  }
+  p { color: var(--muted); margin-bottom: 12px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 20px 24px; margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px;
+  }
+  .card-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .card-tag {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 10px; padding: 2px 8px; border-radius: 20px;
+    margin-bottom: 8px; letter-spacing: 0.06em;
+  }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 32px; }
+
+  /* TERM CARDS */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-bottom: 32px; }
+  .term-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 16px 18px;
+    border-top: 2px solid transparent;
+  }
+  .term-card.c1 { border-top-color: var(--accent); }
+  .term-card.c2 { border-top-color: var(--accent2); }
+  .term-card.c3 { border-top-color: var(--accent3); }
+  .term-card.c4 { border-top-color: var(--accent4); }
+  .term-word {
+    font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .term-plain { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 8px; }
+  .term-analogy {
+    font-size: 12px; color: var(--muted); opacity: 0.7;
+    font-style: italic; padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* FLOW DIAGRAMS */
+  .flow { margin: 32px 0; }
+  .flow-title {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .flow-nodes { display: flex; flex-direction: column; gap: 0; }
+  .flow-node {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 14px 18px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .flow-node-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); flex-shrink: 0; margin-top: 1px;
+  }
+  .flow-connector {
+    width: 1px; height: 20px; background: var(--border2);
+    margin: 0 0 0 31px;
+  }
+  .flow-node-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .flow-node-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .flow-node-note { font-size: 11px; color: var(--accent); margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+  .parallel-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .parallel-node {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 12px 14px; text-align: center;
+  }
+  .parallel-label { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .parallel-desc { font-size: 11px; color: var(--muted); }
+  .flow-center { text-align: center; }
+  .arrow-down {
+    width: 1px; height: 24px; background: var(--border2);
+    margin: 0 auto;
+  }
+  .arrow-label {
+    font-size: 11px; color: var(--muted); font-style: italic;
+    text-align: center; margin: 4px 0;
+  }
+  .fan-arrows { display: flex; justify-content: space-around; height: 28px; align-items: flex-start; position: relative; }
+  .fan-line { flex: 1; height: 1px; background: var(--border2); align-self: center; }
+  .result-box {
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: var(--r); padding: 14px 18px; text-align: center;
+    margin: 12px 0;
+  }
+  .result-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .result-desc { font-size: 12px; color: var(--muted); }
+
+  .branch-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .branch-node {
+    border-radius: var(--r-sm); padding: 14px 16px;
+  }
+  .branch-good { background: rgba(45,122,31,0.06); border: 1px solid rgba(45,122,31,0.18); }
+  .branch-bad  { background: rgba(192,57,43,0.06); border: 1px solid rgba(192,57,43,0.18); }
+  .branch-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .branch-good .branch-title { color: var(--green); }
+  .branch-bad  .branch-title { color: var(--red); }
+  .branch-desc { font-size: 12px; color: var(--muted); }
+
+  /* COMPARISON TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+  .compare-table th {
+    text-align: left; padding: 12px 16px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 14px 16px; font-size: 13px; color: var(--muted);
+    border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table td:first-child { color: var(--text); font-weight: 400; }
+  .td-bad { color: var(--red) !important; }
+  .td-good { color: var(--green) !important; }
+
+  /* STEP PHASES */
+  .phase {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 12px; overflow: hidden;
+  }
+  .phase-header {
+    padding: 16px 20px; cursor: pointer;
+    display: flex; align-items: center; gap: 14px;
+    transition: background .2s;
+  }
+  .phase-header:hover { background: var(--surface2); }
+  .phase-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 12px; flex-shrink: 0;
+  }
+  .phase-meta { flex: 1; }
+  .phase-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .phase-when { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .phase-chevron { color: var(--muted); font-size: 12px; transition: transform .2s; }
+  .phase.open .phase-chevron { transform: rotate(90deg); }
+  .phase-body { padding: 0 20px 20px; display: none; }
+  .phase.open .phase-body { display: block; }
+  .phase-step {
+    display: flex; gap: 10px; padding: 10px 0;
+    border-top: 1px solid var(--border);
+  }
+  .phase-step:first-child { border-top: none; margin-top: 12px; }
+  .phase-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border2); flex-shrink: 0; margin-top: 7px;
+  }
+  .phase-step-title { font-size: 13px; font-weight: 400; color: var(--text); margin-bottom: 2px; }
+  .phase-step-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .phase-step-warn { font-size: 11px; color: var(--accent3); margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+  /* LAYERS VISUAL */
+  .layer-stack { display: flex; flex-direction: column; gap: 6px; margin: 24px 0; }
+  .layer-row {
+    display: flex; align-items: stretch; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 16px 20px;
+    border-left: 3px solid transparent;
+  }
+  .layer-row.l1 { border-left-color: var(--accent); }
+  .layer-row.l2 { border-left-color: var(--accent2); }
+  .layer-row.l3 { border-left-color: var(--accent3); }
+  .layer-row.l4 { border-left-color: var(--accent4); }
+  .layer-row.l5 { border-left-color: var(--green); }
+  .layer-name { font-size: 13px; font-weight: 500; color: var(--text); min-width: 160px; }
+  .layer-tag-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); letter-spacing: 0.06em; margin-bottom: 4px;
+  }
+  .layer-desc { font-size: 12px; color: var(--muted); line-height: 1.55; flex: 1; }
+  .layer-path {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); opacity: 0.6; white-space: nowrap; align-self: center;
+  }
+
+  /* SEARCH */
+  .search-wrap { margin-bottom: 24px; }
+  .search-input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--text); outline: none; transition: border-color .2s;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-input:focus { border-color: var(--border2); }
+
+  /* CAT FILTERS */
+  .cat-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .cat-btn {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px;
+    border: 1px solid var(--border); background: none;
+    color: var(--muted); cursor: pointer; transition: all .15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .cat-btn.active, .cat-btn:hover { color: var(--text); border-color: var(--border2); }
+  .cat-btn.active { background: var(--surface2); }
+
+  /* AGENT WORKFLOW */
+  .workflow-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  .workflow-col { }
+  .workflow-head {
+    padding: 12px 16px; border-radius: var(--r-sm) var(--r-sm) 0 0;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .workflow-head.without { background: rgba(192,57,43,0.06); color: var(--red); border: 1px solid rgba(192,57,43,0.16); border-bottom: none; }
+  .workflow-head.with { background: rgba(45,122,31,0.06); color: var(--accent); border: 1px solid rgba(45,122,31,0.16); border-bottom: none; }
+  .workflow-body {
+    border-radius: 0 0 var(--r-sm) var(--r-sm);
+    overflow: hidden; border-top: none;
+  }
+  .workflow-body.without { border: 1px solid rgba(192,57,43,0.16); }
+  .workflow-body.with    { border: 1px solid rgba(45,122,31,0.16); }
+  .workflow-step {
+    padding: 10px 16px; font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .workflow-step:last-child { border-bottom: none; }
+  .ws-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .without .ws-dot { background: var(--red); opacity: 0.5; }
+  .with .ws-dot    { background: var(--accent); opacity: 0.7; }
+  .ws-text { color: var(--muted); }
+  .ws-text strong { color: var(--text); font-weight: 400; }
+  .ws-wait { color: var(--red); opacity: 0.7; font-size: 11px; margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .ws-auto { color: var(--accent); font-size: 11px; margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+  /* AGENT TYPE CARDS */
+  .agent-type {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 20px 24px; margin-bottom: 12px;
+    border-top: 2px solid transparent;
+  }
+  .at1 { border-top-color: var(--accent4); }
+  .at2 { border-top-color: var(--accent2); }
+  .at3 { border-top-color: var(--accent3); }
+  .at4 { border-top-color: var(--accent); }
+  .agent-type-name { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .agent-type-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+  .agent-type-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+  .agent-type-how { font-size: 12px; color: var(--text); padding: 10px 12px; background: var(--surface2); border-radius: var(--r-sm); line-height: 1.6; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* SKILLS SECTION */
+  .skill-type-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0;
+  }
+  .skill-type-box {
+    border-radius: var(--r); padding: 22px 24px; border: 1px solid var(--border);
+  }
+  .skill-type-box.global {
+    background: rgba(21,99,168,0.04); border-color: rgba(21,99,168,0.18);
+  }
+  .skill-type-box.project {
+    background: rgba(107,34,196,0.04); border-color: rgba(107,34,196,0.18);
+  }
+  .skill-type-label {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .global .skill-type-label { color: var(--accent2); }
+  .project .skill-type-label { color: var(--accent4); }
+  .skill-type-title { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .skill-type-path {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+    background: var(--surface2); display: inline-block; padding: 2px 8px;
+    border-radius: 4px; margin-bottom: 10px;
+  }
+  .skill-type-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+  .skill-type-list { list-style: none; }
+  .skill-type-list li {
+    font-size: 12px; color: var(--muted); padding: 5px 0;
+    border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: baseline;
+  }
+  .skill-type-list li:first-child { border-top: none; }
+  .skill-type-list li::before { content: "→"; font-size: 10px; color: var(--muted); opacity: 0.5; flex-shrink: 0; }
+
+  .skill-anatomy {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); overflow: hidden; margin: 24px 0;
+  }
+  .skill-anatomy-header {
+    padding: 14px 20px; background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .skill-anatomy-body { padding: 20px; }
+  .skill-file {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--r-sm); padding: 16px 18px;
+    line-height: 1.8; color: var(--text); margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .sk-comment { color: var(--muted); opacity: 0.6; }
+  .sk-key { color: var(--accent4); }
+  .sk-val { color: var(--accent2); }
+  .sk-heading { color: var(--accent3); font-weight: 500; }
+  .sk-body { color: var(--text); }
+
+  .source-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 16px 0 28px; }
+  .source-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 16px 18px;
+  }
+  .source-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .source-url { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent2); margin-bottom: 8px; }
+  .source-desc { font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 8px; }
+  .source-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .source-tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 20px;
+    background: var(--surface2); color: var(--muted); border: 1px solid var(--border);
+  }
+
+  .vet-steps { display: flex; flex-direction: column; gap: 0; margin: 16px 0 28px; }
+  .vet-step {
+    display: flex; gap: 14px; padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  .vet-step:first-child { border-top: none; padding-top: 0; }
+  .vet-icon {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+  }
+  .vet-icon.ok  { background: rgba(45,122,31,0.1); color: var(--accent); }
+  .vet-icon.warn{ background: rgba(184,92,0,0.1); color: var(--accent3); }
+  .vet-icon.skip{ background: rgba(21,99,168,0.1); color: var(--accent2); }
+  .vet-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .vet-desc  { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+  .skill-catalogue { margin: 16px 0 28px; }
+  .skill-cat-group { margin-bottom: 24px; }
+  .skill-cat-label {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
+  .skill-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .skill-row:last-child { border-bottom: none; }
+  .skill-scope {
+    font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px;
+    flex-shrink: 0; margin-top: 2px; font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .scope-g { background: rgba(21,99,168,0.08); color: var(--accent2); }
+  .scope-p { background: rgba(107,34,196,0.08); color: var(--accent4); }
+  .skill-info { flex: 1; }
+  .skill-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .skill-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .info-box {
+    background: rgba(21,99,168,0.05); border: 1px solid rgba(21,99,168,0.18);
+    border-radius: var(--r); padding: 14px 18px; margin: 16px 0;
+    font-size: 13px; color: var(--accent2); line-height: 1.65;
+  }
+  .warn-box-light {
+    background: rgba(184,92,0,0.05); border: 1px solid rgba(184,92,0,0.18);
+    border-radius: var(--r); padding: 14px 18px; margin: 16px 0;
+    font-size: 13px; color: var(--accent3); line-height: 1.65;
+  }
+
+  /* HOME PAGE */
+  .home-hero {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .home-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 12px; margin-bottom: 20px;
+  }
+  .home-badge-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  }
+  .home-badge-text {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: 0.06em;
+  }
+  .home-h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 6vw, 58px);
+    font-weight: 300; line-height: 1.1; letter-spacing: -0.03em;
+    color: var(--text); margin-bottom: 20px;
+  }
+  .home-h1 em { font-style: italic; color: var(--accent4); }
+  .home-tagline {
+    font-size: 17px; color: var(--muted); line-height: 1.75;
+    max-width: 580px; margin-bottom: 32px;
+  }
+  .home-cta-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--text); color: var(--bg);
+    padding: 12px 22px; border-radius: var(--r);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    border: none; font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--text);
+    padding: 12px 22px; border-radius: var(--r);
+    font-size: 14px; font-weight: 400; cursor: pointer;
+    border: 1px solid var(--border2); font-family: 'DM Sans', sans-serif;
+    transition: background .15s;
+  }
+  .btn-secondary:hover { background: var(--surface2); }
+
+  .home-what {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-bottom: 48px;
+  }
+  .home-what-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px 20px;
+  }
+  .home-what-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px; font-size: 14px;
+  }
+  .home-what-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .home-what-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .learning-path { margin-bottom: 48px; }
+  .learning-path-title {
+    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300;
+    letter-spacing: -0.02em; color: var(--text); margin-bottom: 6px;
+  }
+  .learning-path-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .path-steps { display: flex; flex-direction: column; gap: 8px; }
+  .path-step {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 16px 20px; cursor: pointer;
+    transition: border-color .15s, box-shadow .15s; text-align: left;
+    font-family: 'DM Sans', sans-serif; width: 100%;
+  }
+  .path-step:hover {
+    border-color: var(--border2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .path-step-num {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+  }
+  .path-step-body { flex: 1; }
+  .path-step-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .path-step-desc { font-size: 12px; color: var(--muted); }
+  .path-step-arrow { font-size: 14px; color: var(--muted); flex-shrink: 0; }
+  .path-step-tag {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 2px 8px; border-radius: 20px; flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+
+  /* GET STARTED PAGE */
+  .gs-progress {
+    display: flex; gap: 0; margin-bottom: 40px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    overflow: hidden;
+  }
+  .gs-prog-step {
+    flex: 1; padding: 10px 8px; text-align: center;
+    font-size: 11px; font-weight: 400; color: var(--muted);
+    cursor: pointer; border-right: 1px solid var(--border);
+    transition: all .15s; background: var(--surface);
+    font-family: 'DM Sans', sans-serif; border-top: none; border-bottom: none; border-left: none;
+  }
+  .gs-prog-step:last-child { border-right: none; }
+  .gs-prog-step.done { background: var(--surface2); color: var(--muted); }
+  .gs-prog-step.current { background: var(--text); color: var(--bg); font-weight: 500; }
+  .gs-prog-step:hover:not(.current) { background: var(--surface2); }
+
+  .gs-panel { display: none; }
+  .gs-panel.active { display: block; }
+
+  .gs-step-header { margin-bottom: 28px; }
+  .gs-step-num {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: 0.1em; margin-bottom: 8px;
+  }
+  .gs-step-title {
+    font-family: 'Fraunces', serif; font-size: 28px; font-weight: 300;
+    letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px;
+  }
+  .gs-step-title em { font-style: italic; color: var(--accent4); }
+  .gs-step-desc { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 600px; }
+
+  .gs-action {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); margin-bottom: 10px; overflow: hidden;
+  }
+  .gs-action-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .gs-action-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--text); color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+  }
+  .gs-action-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .gs-action-body { padding: 16px 18px; }
+  .gs-action-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; }
+  .gs-action-desc:last-child { margin-bottom: 0; }
+
+  .terminal-block {
+    background: #1a1916; border-radius: var(--r-sm);
+    padding: 14px 16px; margin: 10px 0;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    line-height: 1.8;
+  }
+  .t-prompt { color: #4a9a35; }
+  .t-cmd { color: #e8e6e0; }
+  .t-comment { color: #5a5850; }
+  .t-out { color: #888780; }
+  .t-highlight { color: #c8a850; }
+
+  .app-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 12px 0; }
+  .app-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 14px 16px;
+  }
+  .app-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .app-role { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+  .app-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .app-required {
+    display: inline-block; font-size: 10px; padding: 1px 7px;
+    border-radius: 20px; margin-top: 6px;
+    background: rgba(45,122,31,0.08); color: var(--accent);
+    font-family: 'DM Mono', monospace;
+  }
+  .app-optional {
+    display: inline-block; font-size: 10px; padding: 1px 7px;
+    border-radius: 20px; margin-top: 6px;
+    background: var(--surface2); color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .shortcut-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .shortcut-table th {
+    text-align: left; padding: 8px 12px; font-size: 11px;
+    font-weight: 500; color: var(--muted); letter-spacing: 0.05em;
+    text-transform: uppercase; border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .shortcut-table td {
+    padding: 10px 12px; font-size: 13px; color: var(--muted);
+    border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  .shortcut-table tr:last-child td { border-bottom: none; }
+  .shortcut-table td:first-child {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--text); white-space: nowrap;
+  }
+  .kbd {
+    display: inline-block; background: var(--surface2);
+    border: 1px solid var(--border2); border-radius: 4px;
+    padding: 1px 6px; font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--text);
+  }
+
+  .gs-nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+  }
+
+  .checklist { margin: 12px 0; }
+  .check-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .check-row:last-child { border-bottom: none; }
+  .check-box-el {
+    width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0;
+    border: 1.5px solid var(--border2); margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .check-row.checked .check-box-el {
+    background: var(--accent); border-color: var(--accent);
+  }
+  .check-row.checked .check-box-el::after {
+    content: "✓"; color: white; font-size: 10px; font-weight: 700;
+  }
+  .check-row.checked .check-label { text-decoration: line-through; color: var(--muted); opacity: 0.6; }
+  .check-label { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .check-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  @media (max-width: 600px) {
+    .home-what { grid-template-columns: 1fr; }
+    .gs-progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">AI Hub</div>
+  <button class="nav-btn active" onclick="show('home')">Home</button>
+  <button class="nav-btn" onclick="show('getstarted')">Get Started</button>
+  <button class="nav-btn" onclick="show('terms')">Terms</button>
+  <button class="nav-btn" onclick="show('setup')">Project Setup</button>
+  <button class="nav-btn" onclick="show('process')">6-Step Process</button>
+  <button class="nav-btn" onclick="show('skills')">Skills</button>
+  <button class="nav-btn" onclick="show('workflow')">With vs Without</button>
+  <button class="nav-btn" onclick="show('flows')">Agent Flows</button>
+</nav>
+
+<!-- ===== HOME ===== -->
+<section id="home" class="active">
+
+  <div class="home-hero">
+    <div class="home-badge">
+      <div class="home-badge-dot"></div>
+      <span class="home-badge-text">For non-technical founders &amp; builders</span>
+    </div>
+    <h1 class="home-h1">Claude for<br><em>absolute beginners</em></h1>
+    <p class="home-tagline">Everything you need to go from "what is Claude Code?" to running parallel AI agents across your projects — explained in plain English, no coding background required.</p>
+    <div class="home-cta-row">
+      <button class="btn-primary" onclick="showNav('getstarted')">Get started from scratch →</button>
+      <button class="btn-secondary" onclick="showNav('terms')">Browse the glossary</button>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;">
+    <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:300;letter-spacing:-0.02em;color:var(--text);margin-bottom:6px;">What is this hub?</div>
+    <p style="font-size:13px;color:var(--muted);max-width:600px;margin-bottom:20px;">AI Hub is your reference guide for working with Claude Code and AI agents. It covers the full picture — from your first terminal command to orchestrating multiple specialist agents running in parallel — all without assuming you know how to write code.</p>
+  </div>
+
+  <div class="home-what">
+    <div class="home-what-card">
+      <div class="home-what-icon" style="background:rgba(21,99,168,0.08);">
+        <span style="color:var(--accent2);font-size:16px;">⌨</span>
+      </div>
+      <div class="home-what-title">Plain English, always</div>
+      <div class="home-what-desc">Every concept explained with an analogy you'd use in real life. No assumed knowledge, no unexplained jargon. If a term appears, it's defined.</div>
+    </div>
+    <div class="home-what-card">
+      <div class="home-what-icon" style="background:rgba(107,34,196,0.08);">
+        <span style="color:var(--accent4);font-size:16px;">◈</span>
+      </div>
+      <div class="home-what-title">Step-by-step from zero</div>
+      <div class="home-what-desc">The Get Started guide walks through opening your terminal for the first time, what to install, your first Claude Code command, and how to set up a project correctly.</div>
+    </div>
+    <div class="home-what-card">
+      <div class="home-what-icon" style="background:rgba(45,122,31,0.08);">
+        <span style="color:var(--accent);font-size:16px;">⟳</span>
+      </div>
+      <div class="home-what-title">A process that scales</div>
+      <div class="home-what-desc">The 6-step project process works whether you're building your first feature or running five projects simultaneously. Same framework, more capability as you add layers.</div>
+    </div>
+    <div class="home-what-card">
+      <div class="home-what-icon" style="background:rgba(184,92,0,0.08);">
+        <span style="color:var(--accent3);font-size:16px;">⫸</span>
+      </div>
+      <div class="home-what-title">From assistant to team</div>
+      <div class="home-what-desc">Once the basics are solid, you'll learn how to run parallel agents, set up always-on automations, and have your projects running quality checks while you sleep.</div>
+    </div>
+  </div>
+
+  <div class="learning-path">
+    <div class="learning-path-title">Suggested learning order</div>
+    <div class="learning-path-sub">Start at the top. Each section builds on the last. Skip ahead if you already know something.</div>
+    <div class="path-steps">
+
+      <button class="path-step" onclick="showNav('getstarted')">
+        <div class="path-step-num" style="background:rgba(45,122,31,0.1);color:var(--accent);">1</div>
+        <div class="path-step-body">
+          <div class="path-step-title">Get Started — your first session</div>
+          <div class="path-step-desc">Install the tools, open your terminal, run Claude Code for the first time. Covers everything from zero.</div>
+        </div>
+        <span class="path-step-tag" style="background:rgba(45,122,31,0.08);color:var(--accent);">start here</span>
+        <div class="path-step-arrow">→</div>
+      </button>
+
+      <button class="path-step" onclick="showNav('terms')">
+        <div class="path-step-num" style="background:rgba(21,99,168,0.1);color:var(--accent2);">2</div>
+        <div class="path-step-body">
+          <div class="path-step-title">Terms — the glossary</div>
+          <div class="path-step-desc">Every word you'll encounter explained in plain English. Return to this whenever something is unclear.</div>
+        </div>
+        <span class="path-step-tag" style="background:rgba(21,99,168,0.08);color:var(--accent2);">reference</span>
+        <div class="path-step-arrow">→</div>
+      </button>
+
+      <button class="path-step" onclick="showNav('setup')">
+        <div class="path-step-num" style="background:rgba(107,34,196,0.1);color:var(--accent4);">3</div>
+        <div class="path-step-body">
+          <div class="path-step-title">Project Setup — the five layers</div>
+          <div class="path-step-desc">How to structure any project correctly from day one — instruction files, skills, agents, MCP connections, and where your data lives.</div>
+        </div>
+        <span class="path-step-tag" style="background:rgba(107,34,196,0.08);color:var(--accent4);">foundation</span>
+        <div class="path-step-arrow">→</div>
+      </button>
+
+      <button class="path-step" onclick="showNav('process')">
+        <div class="path-step-num" style="background:rgba(184,92,0,0.1);color:var(--accent3);">4</div>
+        <div class="path-step-body">
+          <div class="path-step-title">6-Step Process — how to build</div>
+          <div class="path-step-desc">A repeatable workflow for every feature you build — from the idea through to shipping. Plan, build small, test, review, ship.</div>
+        </div>
+        <span class="path-step-tag" style="background:rgba(184,92,0,0.08);color:var(--accent3);">workflow</span>
+        <div class="path-step-arrow">→</div>
+      </button>
+
+      <button class="path-step" onclick="showNav('skills')">
+        <div class="path-step-num" style="background:rgba(21,99,168,0.1);color:var(--accent2);">5</div>
+        <div class="path-step-body">
+          <div class="path-step-title">Skills — teaching the AI your way</div>
+          <div class="path-step-desc">What skills are, the difference between global and project skills, where to find community skills, and how to vet them before installing.</div>
+        </div>
+        <span class="path-step-tag" style="background:rgba(21,99,168,0.08);color:var(--accent2);">capability</span>
+        <div class="path-step-arrow">→</div>
+      </button>
+
+      <button class="path-step" onclick="showNav('workflow')">
+        <div class="path-step-num" style="background:rgba(192,57,43,0.1);color:var(--red);">6</div>
+        <div class="path-step-body">
+          <div class="path-step-title">With vs Without — the real difference</div>
+          <div class="path-step-desc">A side-by-side comparison of what your day looks like without agents vs with them. The shift from dispatcher to director.</div>
+        </div>
+        <span class="path-step-tag" style="background:rgba(192,57,43,0.08);color:var(--red);">mindset</span>
+        <div class="path-step-arrow">→</div>
+      </button>
+
+      <button class="path-step" onclick="showNav('flows')">
+        <div class="path-step-num" style="background:rgba(45,122,31,0.1);color:var(--accent);">7</div>
+        <div class="path-step-body">
+          <div class="path-step-title">Agent Flows — four automation patterns</div>
+          <div class="path-step-desc">Parallel specialists, event-triggered agents, scheduled summaries, and self-correcting loops — with visual diagrams of each.</div>
+        </div>
+        <span class="path-step-tag" style="background:rgba(45,122,31,0.08);color:var(--accent);">advanced</span>
+        <div class="path-step-arrow">→</div>
+      </button>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ===== GET STARTED ===== -->
+<section id="getstarted">
+
+  <div class="gs-step-header" style="margin-bottom:16px;">
+    <div class="section-eyebrow">Beginner guide</div>
+    <h1 class="home-h1" style="font-size:clamp(28px,5vw,44px);">Your first session<br><em>from zero</em></h1>
+    <p class="home-tagline" style="font-size:15px;">No technical experience required. This guide walks you through everything — from opening your terminal for the first time to running your first Claude Code command and setting up a real project.</p>
+  </div>
+
+  <div class="gs-progress" id="gs-progress">
+    <button class="gs-prog-step current" onclick="gsGo(0)">1. What to install</button>
+    <button class="gs-prog-step" onclick="gsGo(1)">2. The terminal</button>
+    <button class="gs-prog-step" onclick="gsGo(2)">3. Install Claude Code</button>
+    <button class="gs-prog-step" onclick="gsGo(3)">4. First session</button>
+    <button class="gs-prog-step" onclick="gsGo(4)">5. Your project</button>
+    <button class="gs-prog-step" onclick="gsGo(5)">6. Going further</button>
+  </div>
+
+  <!-- STEP 0: WHAT TO INSTALL -->
+  <div class="gs-panel active" id="gs-0">
+    <div class="gs-step-header">
+      <div class="gs-step-num">STEP 1 OF 6</div>
+      <div class="gs-step-title">What to <em>install</em></div>
+      <p class="gs-step-desc">Before you can use Claude Code, you need a handful of free tools on your computer. Here's exactly what each one is and why you need it.</p>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">A</div><div class="gs-action-title">Required — install these first</div></div>
+      <div class="gs-action-body">
+        <div class="app-row">
+          <div class="app-card">
+            <div class="app-name">Node.js</div>
+            <div class="app-role">nodejs.org/en/download</div>
+            <div class="app-desc">The engine Claude Code runs on. Think of it as the language your computer needs to understand Claude Code's instructions. Download the LTS version.</div>
+            <span class="app-required">required · install first</span>
+          </div>
+          <div class="app-card">
+            <div class="app-name">Claude Code</div>
+            <div class="app-role">installed via terminal after Node</div>
+            <div class="app-desc">The AI assistant itself. Installed in one command after Node.js is set up. This is what you'll use to build things.</div>
+            <span class="app-required">required</span>
+          </div>
+          <div class="app-card">
+            <div class="app-name">Git</div>
+            <div class="app-role">git-scm.com/downloads</div>
+            <div class="app-desc">Tracks every change to your code and lets you go back to any previous version. Required for Claude Code to work properly with your project.</div>
+            <span class="app-required">required</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">B</div><div class="gs-action-title">Strongly recommended — makes life much easier</div></div>
+      <div class="gs-action-body">
+        <div class="app-row">
+          <div class="app-card">
+            <div class="app-name">Cursor</div>
+            <div class="app-role">cursor.com</div>
+            <div class="app-desc">A visual code editor where you can see and read your project files. Claude Code runs inside it. Think of it as the window you look through while Claude Code works.</div>
+            <span class="app-optional">recommended</span>
+          </div>
+          <div class="app-card">
+            <div class="app-name">GitHub account</div>
+            <div class="app-role">github.com</div>
+            <div class="app-desc">Where your code lives online. Free to create. Lets you back up your work, share it, and deploy it to the internet automatically.</div>
+            <span class="app-optional">recommended</span>
+          </div>
+          <div class="app-card">
+            <div class="app-name">Anthropic account</div>
+            <div class="app-role">console.anthropic.com</div>
+            <div class="app-desc">Your Claude subscription. Claude Pro ($20/month) or Claude Max ($100/month) gives you access to Claude Code. Sign in when Claude Code first opens.</div>
+            <span class="app-optional">needed to sign in</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">C</div><div class="gs-action-title">Your install checklist</div></div>
+      <div class="gs-action-body">
+        <div class="checklist" id="install-checklist">
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Downloaded and installed Node.js (LTS version)</div><div class="check-sub">From nodejs.org/en/download — choose the version marked LTS</div></div></div>
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Downloaded and installed Git</div><div class="check-sub">From git-scm.com/downloads — accept all defaults during install</div></div></div>
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Created a GitHub account</div><div class="check-sub">Free at github.com — just an email and password</div></div></div>
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Downloaded Cursor</div><div class="check-sub">Free at cursor.com — install like any Mac app</div></div></div>
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Have an Anthropic account with Claude Pro or Max</div><div class="check-sub">At claude.ai — you'll sign in when Claude Code first opens</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gs-nav-row">
+      <div></div>
+      <button class="btn-primary" onclick="gsGo(1)">Next: The terminal →</button>
+    </div>
+  </div>
+
+  <!-- STEP 1: THE TERMINAL -->
+  <div class="gs-panel" id="gs-1">
+    <div class="gs-step-header">
+      <div class="gs-step-num">STEP 2 OF 6</div>
+      <div class="gs-step-title">The <em>terminal</em></div>
+      <p class="gs-step-desc">The terminal is a text window where you type commands directly to your computer. It sounds intimidating but you only need about five commands to use Claude Code. Here's everything you need to know.</p>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">1</div><div class="gs-action-title">How to open it on a Mac</div></div>
+      <div class="gs-action-body">
+        <p class="gs-action-desc">Press <span class="kbd">Cmd</span> + <span class="kbd">Space</span> to open Spotlight Search. Type <strong>Terminal</strong> and press Enter. A white or black window opens — that's it. You can also open the terminal directly inside Cursor: go to View → Terminal in the menu bar.</p>
+        <p class="gs-action-desc" style="margin-top:8px;">The terminal shows your username and a <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">$</code> or <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">%</code> symbol. This is called the prompt — it means the computer is waiting for your instruction.</p>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">2</div><div class="gs-action-title">The five commands you actually need</div></div>
+      <div class="gs-action-body">
+        <table class="shortcut-table">
+          <tr><th>Command</th><th>What it does</th><th>Example</th></tr>
+          <tr><td>cd</td><td>"change directory" — moves you into a folder</td><td><code style="font-family:'DM Mono',monospace;font-size:11px;">cd projects/myapp</code></td></tr>
+          <tr><td>ls</td><td>lists everything in the current folder</td><td><code style="font-family:'DM Mono',monospace;font-size:11px;">ls</code></td></tr>
+          <tr><td>mkdir</td><td>creates a new folder</td><td><code style="font-family:'DM Mono',monospace;font-size:11px;">mkdir my-project</code></td></tr>
+          <tr><td>pwd</td><td>shows you exactly where you are</td><td><code style="font-family:'DM Mono',monospace;font-size:11px;">pwd</code></td></tr>
+          <tr><td>claude</td><td>opens Claude Code in the current folder</td><td><code style="font-family:'DM Mono',monospace;font-size:11px;">claude</code></td></tr>
+        </table>
+        <p class="gs-action-desc" style="margin-top:8px;">That's genuinely all you need. You'll use <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">cd</code> to navigate to your project, then <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">claude</code> to start working.</p>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">3</div><div class="gs-action-title">Navigating to your project — a worked example</div></div>
+      <div class="gs-action-body">
+        <p class="gs-action-desc">Your project folder is probably in Documents or Desktop. Here's how to navigate there:</p>
+        <div class="terminal-block">
+          <span class="t-comment"># Find out where you are right now</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">pwd</span><br>
+          <span class="t-out">/Users/yourname</span><br><br>
+          <span class="t-comment"># Move into your Documents folder</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">cd Documents</span><br><br>
+          <span class="t-comment"># See what's inside</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">ls</span><br>
+          <span class="t-out">my-app/   notes/   projects/</span><br><br>
+          <span class="t-comment"># Move into your project folder</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">cd my-app</span><br><br>
+          <span class="t-comment"># Now you're ready to open Claude Code here</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">claude</span>
+        </div>
+        <p class="gs-action-desc">Tip: you can drag a folder from Finder onto the terminal window and it automatically types the full path for you.</p>
+      </div>
+    </div>
+
+    <div class="gs-nav-row">
+      <button class="btn-secondary" onclick="gsGo(0)">← Back</button>
+      <button class="btn-primary" onclick="gsGo(2)">Next: Install Claude Code →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: INSTALL CLAUDE CODE -->
+  <div class="gs-panel" id="gs-2">
+    <div class="gs-step-header">
+      <div class="gs-step-num">STEP 3 OF 6</div>
+      <div class="gs-step-title">Install <em>Claude Code</em></div>
+      <p class="gs-step-desc">With Node.js installed, Claude Code is a single command. Copy and paste each line exactly as written — don't change anything.</p>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">1</div><div class="gs-action-title">Install Claude Code globally</div></div>
+      <div class="gs-action-body">
+        <p class="gs-action-desc">Open your terminal and run this command. The <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">-g</code> flag means "install globally" — so you can use it from any folder on your computer.</p>
+        <div class="terminal-block">
+          <span class="t-prompt">% </span><span class="t-cmd">npm install -g @anthropic-ai/claude-code</span><br>
+          <span class="t-out"><br>added 47 packages in 12s<br>...</span><br>
+          <span class="t-highlight">✓ Claude Code installed successfully</span>
+        </div>
+        <p class="gs-action-desc">If you see a permission error, run: <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">sudo npm install -g @anthropic-ai/claude-code</code> and enter your computer password when prompted.</p>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">2</div><div class="gs-action-title">Verify the install worked</div></div>
+      <div class="gs-action-body">
+        <div class="terminal-block">
+          <span class="t-prompt">% </span><span class="t-cmd">claude --version</span><br>
+          <span class="t-out">@anthropic-ai/claude-code/1.x.x</span>
+        </div>
+        <p class="gs-action-desc">If you see a version number — you're installed. If you see "command not found" — close the terminal completely, reopen it, and try again.</p>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">3</div><div class="gs-action-title">Install inside Cursor (optional but recommended)</div></div>
+      <div class="gs-action-body">
+        <p class="gs-action-desc">Open Cursor. Press <span class="kbd">Cmd</span>+<span class="kbd">Shift</span>+<span class="kbd">X</span> to open the Extensions panel. Search for <strong>Claude Code</strong> and click Install. This gives you a visual panel inside Cursor so you can see Claude working alongside your files.</p>
+        <p class="gs-action-desc" style="margin-top:8px;">Sign in with your Anthropic account when prompted. From this point on, you can use Claude Code either through the terminal or through Cursor's panel — whichever feels more comfortable.</p>
+      </div>
+    </div>
+
+    <div class="gs-nav-row">
+      <button class="btn-secondary" onclick="gsGo(1)">← Back</button>
+      <button class="btn-primary" onclick="gsGo(3)">Next: Your first session →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: FIRST SESSION -->
+  <div class="gs-panel" id="gs-3">
+    <div class="gs-step-header">
+      <div class="gs-step-num">STEP 4 OF 6</div>
+      <div class="gs-step-title">Your first <em>session</em></div>
+      <p class="gs-step-desc">Let's run Claude Code for the first time and learn the commands you'll use every single day. Open your terminal and follow along.</p>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">1</div><div class="gs-action-title">Navigate to a folder and open Claude Code</div></div>
+      <div class="gs-action-body">
+        <div class="terminal-block">
+          <span class="t-comment"># Go to your Desktop (or wherever you want)</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">cd ~/Desktop</span><br><br>
+          <span class="t-comment"># Create a test folder</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">mkdir hello-claude</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">cd hello-claude</span><br><br>
+          <span class="t-comment"># Open Claude Code</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">claude</span><br>
+          <span class="t-out"><br>✓ Connected to Claude<br>
+  Working in: ~/Desktop/hello-claude<br><br>
+  &gt; </span>
+        </div>
+        <p class="gs-action-desc">The <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">&gt;</code> prompt means Claude is ready. Type your first message.</p>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">2</div><div class="gs-action-title">Essential Claude Code shortcuts</div></div>
+      <div class="gs-action-body">
+        <table class="shortcut-table">
+          <tr><th>Shortcut</th><th>What it does</th></tr>
+          <tr><td><span class="kbd">Escape</span></td><td>Stop Claude mid-task (not Ctrl+C — that exits entirely)</td></tr>
+          <tr><td><span class="kbd">Escape</span> <span class="kbd">Escape</span></td><td>Open a list of your previous messages to jump back to</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">R</span></td><td>Search your command history — find a previous command</td></tr>
+          <tr><td><span class="kbd">Shift</span>+<span class="kbd">Enter</span></td><td>New line without sending (for multi-line messages)</td></tr>
+          <tr><td>/model</td><td>Switch between AI models (Sonnet, Opus, Haiku)</td></tr>
+          <tr><td>/status</td><td>Check which model is running and your usage</td></tr>
+          <tr><td>/clear</td><td>Start a fresh conversation (keeps your files)</td></tr>
+          <tr><td>/help</td><td>See all available commands</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">3</div><div class="gs-action-title">How to talk to Claude Code</div></div>
+      <div class="gs-action-body">
+        <p class="gs-action-desc">Claude Code understands plain English. You don't write code — you describe what you want. Here are example prompts that work well:</p>
+        <div class="terminal-block">
+          <span class="t-comment"># Ask it to explain something</span><br>
+          <span class="t-prompt">&gt; </span><span class="t-cmd">What files are in this folder and what does each one do?</span><br><br>
+          <span class="t-comment"># Ask it to build something</span><br>
+          <span class="t-prompt">&gt; </span><span class="t-cmd">Create a simple HTML page with a headline and a button</span><br><br>
+          <span class="t-comment"># Ask it to plan before building</span><br>
+          <span class="t-prompt">&gt; </span><span class="t-cmd">Before building anything, explain what you're going to do</span><br><br>
+          <span class="t-comment"># Ask it to check its own work</span><br>
+          <span class="t-prompt">&gt; </span><span class="t-cmd">Review what you just built and flag any potential problems</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gs-nav-row">
+      <button class="btn-secondary" onclick="gsGo(2)">← Back</button>
+      <button class="btn-primary" onclick="gsGo(4)">Next: Set up your project →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: YOUR PROJECT -->
+  <div class="gs-panel" id="gs-4">
+    <div class="gs-step-header">
+      <div class="gs-step-num">STEP 5 OF 6</div>
+      <div class="gs-step-title">Set up your <em>real project</em></div>
+      <p class="gs-step-desc">Now let's do this properly. Every real project needs a CLAUDE.md file — the briefing document Claude reads at the start of every session. This is the single most important thing you can do to make Claude Code genuinely useful.</p>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">1</div><div class="gs-action-title">Navigate into your actual project</div></div>
+      <div class="gs-action-body">
+        <div class="terminal-block">
+          <span class="t-comment"># Go to wherever your project lives</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">cd ~/Documents/my-project</span><br><br>
+          <span class="t-comment"># Or if you're starting fresh, create it now</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">mkdir ~/Documents/my-project</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">cd ~/Documents/my-project</span><br>
+          <span class="t-prompt">% </span><span class="t-cmd">git init</span><br>
+          <span class="t-out">Initialized empty Git repository</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">2</div><div class="gs-action-title">Create your CLAUDE.md file</div></div>
+      <div class="gs-action-body">
+        <p class="gs-action-desc">Create a file called <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">CLAUDE.md</code> in your project folder. Open it in any text editor — TextEdit on Mac works fine. Write in plain English. Here's a template:</p>
+        <div class="terminal-block">
+          <span class="t-highlight"># My Project Name</span><br><br>
+          <span class="t-highlight">## What this is</span><br>
+          <span class="t-cmd">One sentence describing what this app does and who it's for.</span><br><br>
+          <span class="t-highlight">## What I'm building right now</span><br>
+          <span class="t-cmd">The specific feature or thing I'm working on this session.</span><br><br>
+          <span class="t-highlight">## Rules</span><br>
+          <span class="t-cmd">- Always explain what you're going to do before doing it<br>
+  - Never delete any file without asking me first<br>
+  - When you write code, add a plain English comment above each section</span><br><br>
+          <span class="t-highlight">## Out of scope right now</span><br>
+          <span class="t-cmd">List anything you don't want Claude to build yet.</span>
+        </div>
+        <p class="gs-action-desc">This file loads automatically every time you type <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;">claude</code> in this folder. Claude immediately knows your project without you re-explaining it.</p>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">3</div><div class="gs-action-title">Verify Claude sees your briefing</div></div>
+      <div class="gs-action-body">
+        <div class="terminal-block">
+          <span class="t-prompt">% </span><span class="t-cmd">claude</span><br>
+          <span class="t-out">&gt; </span><span class="t-cmd">What do you know about this project?</span><br><br>
+          <span class="t-out">Based on your CLAUDE.md, this project is...</span>
+        </div>
+        <p class="gs-action-desc">If Claude describes your project accurately — you're set up correctly. Every session now starts with full context. This is the foundation everything else builds on.</p>
+      </div>
+    </div>
+
+    <div class="gs-nav-row">
+      <button class="btn-secondary" onclick="gsGo(3)">← Back</button>
+      <button class="btn-primary" onclick="gsGo(5)">Next: Going further →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: GOING FURTHER -->
+  <div class="gs-panel" id="gs-5">
+    <div class="gs-step-header">
+      <div class="gs-step-num">STEP 6 OF 6</div>
+      <div class="gs-step-title">Where to go <em>next</em></div>
+      <p class="gs-step-desc">You've installed the tools, learned the terminal, set up Claude Code, and created your first CLAUDE.md. That's the foundation. Here's what to build on it.</p>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">1</div><div class="gs-action-title">Your immediate next three steps</div></div>
+      <div class="gs-action-body">
+        <div class="checklist">
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Read the 6-Step Process tab</div><div class="check-sub">Learn the repeatable workflow for every feature you build — plan, build small, test, review, ship</div></div></div>
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Explore the Project Setup tab</div><div class="check-sub">Understand the five layers that make every session smarter — skills, agents, MCP connections</div></div></div>
+          <div class="check-row" onclick="toggleCheck(this)"><div class="check-box-el"></div><div><div class="check-label">Install your first community skill</div><div class="check-sub">Start with the official Anthropic docx or pdf skill — gives Claude a new capability in one command</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">2</div><div class="gs-action-title">The multi-agent step — when you're ready</div></div>
+      <div class="gs-action-body">
+        <p class="gs-action-desc">Once you're comfortable with single sessions, you can start running multiple specialists in parallel. The signal that you're ready: you've completed five or more single-agent sessions, your CLAUDE.md is accurate and up to date, and you find yourself waiting between tasks rather than thinking through them.</p>
+        <p class="gs-action-desc" style="margin-top:8px;">When that moment comes, the Agent Flows tab explains the four automation patterns — parallel specialists, event-triggered agents, scheduled summaries, and self-correcting loops. The With vs Without tab shows you exactly what your day looks like once those are running.</p>
+        <p class="gs-action-desc" style="margin-top:8px;">There's no rush. A single Claude Code session with a good CLAUDE.md is already dramatically more powerful than starting from scratch each time. Build the habit first, then add the layers.</p>
+      </div>
+    </div>
+
+    <div class="gs-action">
+      <div class="gs-action-head"><div class="gs-action-num">3</div><div class="gs-action-title">Useful things to know going in</div></div>
+      <div class="gs-action-body">
+        <table class="shortcut-table">
+          <tr><th>Situation</th><th>What to do</th></tr>
+          <tr><td>Claude goes in the wrong direction</td><td>Press <span class="kbd">Escape</span> to stop it. Describe the problem. Ask it to try a different approach.</td></tr>
+          <tr><td>You don't understand what Claude built</td><td>Ask: "Explain what you just built in plain English, as if I'm not a developer."</td></tr>
+          <tr><td>Something broke</td><td>Ask: "Something stopped working. Walk me through what changed and what might have caused it."</td></tr>
+          <tr><td>Claude seems to forget context</td><td>Your session is getting long. Type /clear to start fresh, or update your CLAUDE.md with a "current state" section.</td></tr>
+          <tr><td>You want to undo something</td><td>Claude Code has a /rewind command. Or use Git: <code style="font-family:'DM Mono',monospace;font-size:11px;">git diff</code> shows changes, <code style="font-family:'DM Mono',monospace;font-size:11px;">git checkout .</code> undoes them.</td></tr>
+          <tr><td>You want to try something risky</td><td>Ask Claude to "describe exactly what you're going to do before doing it." Review, then approve.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="gs-nav-row">
+      <button class="btn-secondary" onclick="gsGo(4)">← Back</button>
+      <button class="btn-primary" onclick="showNav('process')">Go to 6-Step Process →</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ===== TERMS ===== -->
+<section id="terms">
+  <div class="section-eyebrow">Reference guide</div>
+  <h1>Plain English<br><em>glossary</em></h1>
+  <p class="lead">Every term you'll encounter when working with AI agents — explained without jargon. No technical background required.</p>
+
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="term-search" placeholder="Search any term..." oninput="filterTerms()">
+  </div>
+
+  <div class="cat-row" id="cat-row">
+    <button class="cat-btn active" data-cat="all" onclick="setCat('all',this)">All</button>
+    <button class="cat-btn" data-cat="context" onclick="setCat('context',this)">Context &amp; instructions</button>
+    <button class="cat-btn" data-cat="tools" onclick="setCat('tools',this)">Tools &amp; skills</button>
+    <button class="cat-btn" data-cat="agents" onclick="setCat('agents',this)">Agents &amp; roles</button>
+    <button class="cat-btn" data-cat="infra" onclick="setCat('infra',this)">Infrastructure</button>
+    <button class="cat-btn" data-cat="process" onclick="setCat('process',this)">Process</button>
+  </div>
+
+  <div class="term-grid" id="term-grid">
+
+    <div class="term-card c1" data-cat="context" data-search="claude code ai tool terminal">
+      <div class="term-word">Claude Code</div>
+      <div class="term-plain">An AI assistant that lives in your computer's command-line window and works directly inside your project files — reading, writing, and editing code on your behalf.</div>
+      <div class="term-analogy">Like a contractor who works inside your actual office, not one who sends emails from across town.</div>
+    </div>
+
+    <div class="term-card c1" data-cat="context" data-search="claude md instructions briefing file">
+      <div class="term-word">CLAUDE.md</div>
+      <div class="term-plain">A plain text document you write once that tells the AI about your project — your stack, your rules, your current focus. It loads automatically at the start of every session.</div>
+      <div class="term-analogy">The onboarding document you'd hand a new hire on day one.</div>
+    </div>
+
+    <div class="term-card c1" data-cat="context" data-search="global local project scope always">
+      <div class="term-word">Global vs project file</div>
+      <div class="term-plain">You have two instruction files. The global one applies to every project — your personal defaults. The project one only applies to that specific product.</div>
+      <div class="term-analogy">Your personal work style is global. The brief for a specific client is project-level.</div>
+    </div>
+
+    <div class="term-card c1" data-cat="context" data-search="context window memory length conversation">
+      <div class="term-word">Context window</div>
+      <div class="term-plain">The amount of information the AI can hold in working memory during one session. The bigger the window, the more files and history it can track at once.</div>
+      <div class="term-analogy">The size of someone's desk — bigger desk, more files spread out at once.</div>
+    </div>
+
+    <div class="term-card c2" data-cat="tools" data-search="skill capability how to task playbook">
+      <div class="term-word">Skill</div>
+      <div class="term-plain">A folder with a plain-text instruction file inside. It teaches the AI a specific task — your exact process, your format, your rules. Claude loads it automatically when relevant.</div>
+      <div class="term-analogy">A laminated instruction card above a workstation — your exact recipe, not a generic one.</div>
+    </div>
+
+    <div class="term-card c2" data-cat="tools" data-search="community skill github public library install">
+      <div class="term-word">Community skill</div>
+      <div class="term-plain">A pre-built skill someone else wrote and shared on GitHub. You download it and immediately have that capability — document generation, SEO analysis, slide creation.</div>
+      <div class="term-analogy">A browser extension — install once, get the capability immediately.</div>
+    </div>
+
+    <div class="term-card c2" data-cat="tools" data-search="mcp model context protocol connect external tools database">
+      <div class="term-word">MCP (Model Context Protocol)</div>
+      <div class="term-plain">The standard way to connect your AI to outside systems — your database, your files, GitHub, Slack. Once connected, the AI can look things up and take action instead of only knowing what you type.</div>
+      <div class="term-analogy">Giving your contractor a keycard to the filing room and company database instead of them working from what you bring into the meeting.</div>
+    </div>
+
+    <div class="term-card c2" data-cat="tools" data-search="mcp server connection integration plugin">
+      <div class="term-word">MCP server</div>
+      <div class="term-plain">A specific connection to one external system. One for your database, one for your files, one for GitHub. Each is a separate tool the AI can pick up and use.</div>
+      <div class="term-analogy">Each key on a keyring gives access to one room. More MCP servers = more rooms the AI can enter.</div>
+    </div>
+
+    <div class="term-card c3" data-cat="agents" data-search="subagent agent role specialist parallel worker">
+      <div class="term-word">Subagent</div>
+      <div class="term-plain">A separate AI instance spawned to handle one specific job. Multiple subagents can work simultaneously on different parts of a task, then report back with results.</div>
+      <div class="term-analogy">Dispatching specialists from your team to work in parallel, then reconvening to combine results.</div>
+    </div>
+
+    <div class="term-card c3" data-cat="agents" data-search="orchestrator lead main session coordinator director">
+      <div class="term-word">Orchestrator</div>
+      <div class="term-plain">The main AI session that manages the overall task — breaks it into pieces, assigns work to specialists, and pulls everything back together.</div>
+      <div class="term-analogy">The project manager who delegates to specialists, then assembles the final deliverable.</div>
+    </div>
+
+    <div class="term-card c3" data-cat="agents" data-search="always on background automation trigger event schedule">
+      <div class="term-word">Always-on agent</div>
+      <div class="term-plain">An agent that runs automatically — triggered by an event (a file being saved, a PR being opened) or on a schedule (every morning at 8am). You don't trigger it. It just runs.</div>
+      <div class="term-analogy">A security guard who patrols automatically — you don't have to ask them to check the doors.</div>
+    </div>
+
+    <div class="term-card c3" data-cat="agents" data-search="hook self correcting automatic quality check loop">
+      <div class="term-word">Hook</div>
+      <div class="term-plain">A rule that fires automatically after every action the AI takes. For example: "after every file edit, run a quality check." The AI sees the result and fixes anything wrong before you look.</div>
+      <div class="term-analogy">A spell-checker that runs automatically every time you finish typing — you never manually ask it to check.</div>
+    </div>
+
+    <div class="term-card c4" data-cat="infra" data-search="database supabase where data lives storage">
+      <div class="term-word">Database</div>
+      <div class="term-plain">Where your app stores and retrieves information — user accounts, records, uploaded data. Everything your app needs to remember lives here.</div>
+      <div class="term-analogy">The filing system behind the counter. The front of the shop is what users see; the database is everything behind it.</div>
+    </div>
+
+    <div class="term-card c4" data-cat="infra" data-search="vercel deployment hosting deploy live">
+      <div class="term-word">Deployment platform</div>
+      <div class="term-plain">The service that takes your code and makes it live on the internet. Every time you push an update, the platform rebuilds and publishes your app automatically.</div>
+      <div class="term-analogy">The printer and delivery service — you write the document, it prints and ships to anyone who visits your URL.</div>
+    </div>
+
+    <div class="term-card c4" data-cat="infra" data-search="github version control repo repository code history">
+      <div class="term-word">Version control (GitHub)</div>
+      <div class="term-plain">Where your code lives online. Every change is saved with a description of what changed, so you can always go back to an earlier version or share code with others.</div>
+      <div class="term-analogy">Google Docs version history for your entire codebase, plus a shared drive for your team.</div>
+    </div>
+
+    <div class="term-card c4" data-cat="infra" data-search="api route server endpoint backend call">
+      <div class="term-word">API route</div>
+      <div class="term-plain">A URL on your server that your app can call to get data or trigger an action. When your app needs AI logic, it calls an API route on your own server, which then calls the AI.</div>
+      <div class="term-analogy">An internal phone extension — dial the right number and a specific department handles your request.</div>
+    </div>
+
+    <div class="term-card c4" data-cat="infra" data-search="environment variable secret api key config password">
+      <div class="term-word">Environment variable</div>
+      <div class="term-plain">A secret stored on your computer (not in your code files) that your app can read — like API keys and passwords. Keeps sensitive information out of your code.</div>
+      <div class="term-analogy">Your bank PIN on a Post-it on your own desk rather than written inside a shared document.</div>
+    </div>
+
+    <div class="term-card c1" data-cat="process" data-search="vibe coding build ship non-technical">
+      <div class="term-word">Vibe coding</div>
+      <div class="term-plain">Building software by describing what you want in plain English and letting AI write the code — without needing to know how to code yourself.</div>
+      <div class="term-analogy">Being the architect who draws the vision while the AI acts as the construction crew that builds it.</div>
+    </div>
+
+    <div class="term-card c1" data-cat="process" data-search="fallback redundancy backup when down fails">
+      <div class="term-word">Fallback</div>
+      <div class="term-plain">What your app does when something fails — like the AI being temporarily unavailable. A good fallback queues the task for later or shows a "processing" message instead of breaking.</div>
+      <div class="term-analogy">When your first supplier is out of stock, you automatically switch to your backup instead of cancelling the order.</div>
+    </div>
+
+    <div class="term-card c1" data-cat="process" data-search="migration schema change database update">
+      <div class="term-word">Migration</div>
+      <div class="term-plain">A saved set of changes to your database structure — adding a new field, creating a new table. Migrations track changes so they can be applied or reversed precisely.</div>
+      <div class="term-analogy">A documented change order for your filing system — recorded so you can undo it if needed.</div>
+    </div>
+
+    <div class="term-card c2" data-cat="tools" data-search="prompt injection security attack hidden instructions">
+      <div class="term-word">Prompt injection</div>
+      <div class="term-plain">A security risk where hidden instructions inside a file try to trick the AI into doing something you didn't ask for — like overriding your rules or sending data elsewhere.</div>
+      <div class="term-analogy">Someone hiding a note inside a document that says "ignore the contract and do this instead."</div>
+    </div>
+
+    <div class="term-card c2" data-cat="tools" data-search="stack block template reusable technology">
+      <div class="term-word">Stack block</div>
+      <div class="term-plain">A reusable section of your instruction file that describes a specific set of technologies you use. Write it once, paste it into any project that uses the same tools.</div>
+      <div class="term-analogy">A template clause in a contract — written once carefully, reused whenever it applies.</div>
+    </div>
+
+    <div class="term-card c3" data-cat="agents" data-search="cursor rules project instructions editor">
+      <div class="term-word">.cursorrules</div>
+      <div class="term-plain">The equivalent of CLAUDE.md but for Cursor's built-in AI agent. Same idea — a plain text file at your project root that tells the AI your conventions and rules.</div>
+      <div class="term-analogy">Same onboarding document, different contractor reading it.</div>
+    </div>
+
+    <div class="term-card c4" data-cat="infra" data-search="toolkit repo github private personal library">
+      <div class="term-word">Personal toolkit repo</div>
+      <div class="term-plain">A private GitHub repository where you store all your reusable AI assets — your global instruction file, stack blocks, skills, and agent definitions. Pull from it to start any new project instantly.</div>
+      <div class="term-analogy">Your personal toolbox that you bring to every job site, instead of buying new tools each time.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== SETUP ===== -->
+<section id="setup">
+  <div class="section-eyebrow">Project configuration</div>
+  <h1>Complete project<br><em>setup layers</em></h1>
+  <p class="lead">Every new project is built from the same five layers. Each one adds a different kind of capability. Together they make every session start at full power.</p>
+
+  <h2>The five layers</h2>
+  <div class="layer-stack">
+    <div class="layer-row l1">
+      <div>
+        <div class="layer-tag-label">Layer 1 — context</div>
+        <div class="layer-name">CLAUDE.md instructions</div>
+        <div class="layer-desc">Tells the AI who you are, what this project is, and how to behave. Two files: one global (applies everywhere) and one per project (specific to this product).</div>
+      </div>
+      <div class="layer-path">~/.claude/CLAUDE.md<br>/project/CLAUDE.md</div>
+    </div>
+    <div class="layer-row l2">
+      <div>
+        <div class="layer-tag-label">Layer 2 — capability</div>
+        <div class="layer-name">Skills library</div>
+        <div class="layer-desc">Plain-text instruction sets that teach the AI how to do specific tasks your way. Global skills apply to all projects. Project skills are specific to this product.</div>
+      </div>
+      <div class="layer-path">.claude/skills/<br>~/.claude/skills/</div>
+    </div>
+    <div class="layer-row l3">
+      <div>
+        <div class="layer-tag-label">Layer 3 — roles</div>
+        <div class="layer-name">Agent definitions</div>
+        <div class="layer-desc">Markdown files that define specialist roles the AI can adopt or spawn. The orchestrator calls on them for parallel or complex tasks.</div>
+      </div>
+      <div class="layer-path">.claude/agents/<br>~/.claude/agents/</div>
+    </div>
+    <div class="layer-row l4">
+      <div>
+        <div class="layer-tag-label">Layer 4 — access</div>
+        <div class="layer-name">MCP server connections</div>
+        <div class="layer-desc">What external systems the AI can reach — your database, your file system, GitHub, Slack, web search. Configured once in .mcp.json at your project root.</div>
+      </div>
+      <div class="layer-path">/project/.mcp.json</div>
+    </div>
+    <div class="layer-row l5">
+      <div>
+        <div class="layer-tag-label">Layer 5 — extend</div>
+        <div class="layer-name">Community skills + marketplace plugins</div>
+        <div class="layer-desc">Pre-built capabilities from the community — document creation, SEO, image generation, Figma integration. Install once, available everywhere.</div>
+      </div>
+      <div class="layer-path">github.com / marketplace</div>
+    </div>
+  </div>
+
+  <h2>What your AI can reach</h2>
+  <p style="margin-bottom:20px;">Once MCP servers are connected, your AI agents have direct access to your actual data and tools — not just what you paste into the chat.</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-tag" style="background:rgba(21,99,168,0.08);color:var(--accent2);">filesystem</div>
+      <div class="card-title">Your project files</div>
+      <div class="card-body">The AI reads and writes your actual code. It knows what already exists, what patterns you use, and can make changes that fit — not generic code that might conflict.</div>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="background:rgba(21,99,168,0.08);color:var(--accent2);">database</div>
+      <div class="card-title">Your live data</div>
+      <div class="card-body">The AI queries your actual database tables. Instead of guessing at your schema, it looks it up. "What fields are we missing?" becomes a real question with a real answer.</div>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="background:rgba(45,122,31,0.08);color:var(--accent);">github</div>
+      <div class="card-title">Your code history</div>
+      <div class="card-body">The AI reads your repositories, pull requests, and commit history. Useful for code review agents and automated summaries of what changed.</div>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="background:rgba(45,122,31,0.08);color:var(--accent);">memory</div>
+      <div class="card-title">Session scratchpad</div>
+      <div class="card-body">A persistent notepad for the AI during long sessions. It remembers what it did in step 1 even when it's on step 8 — stops losing context mid-task.</div>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="background:rgba(107,34,196,0.08);color:var(--accent4);">web search</div>
+      <div class="card-title">Live internet data</div>
+      <div class="card-body">The AI can search the web to look up current documentation, APIs, library versions, or anything that may have changed since its training data.</div>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="background:rgba(107,34,196,0.08);color:var(--accent4);">deployment</div>
+      <div class="card-title">Your live environment</div>
+      <div class="card-body">Connected to Vercel, Netlify, or your host of choice. The AI can check deployment status, read logs, and surface errors from production.</div>
+    </div>
+  </div>
+
+  <h2>Where your data lives</h2>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">Database</div>
+      <div class="card-body">Your app's memory. Stores user accounts, records, uploaded data, settings. Structured in tables. Queried through secure connections — never directly from the browser.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">File storage</div>
+      <div class="card-body">Where uploaded files live — images, documents, CSVs. Separate from your database. Usually an object storage service linked to your database by URL.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Deployment (Vercel etc.)</div>
+      <div class="card-body">Your live app. Code runs here when users visit your URL. Environment variables (secrets) live here too — never in your code files.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">GitHub</div>
+      <div class="card-body">Your code history. Every version of everything you've ever built. Source of truth for your codebase — deployment pulls from here automatically on each push.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">API services</div>
+      <div class="card-body">Third-party tools your app calls — payment processors, AI models, email services, analytics. Accessed via keys stored as environment variables.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Local machine</div>
+      <div class="card-body">Your computer. Where code is written and tested before being pushed to GitHub. Your .env.local file lives here — never committed, never shared.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section id="process">
+  <div class="section-eyebrow">How to work</div>
+  <h1>The 6-phase<br><em>project process</em></h1>
+  <p class="lead">A repeatable process for every project — from the first idea to a shipped feature. Click each phase to expand it.</p>
+
+  <div id="phases">
+
+    <div class="phase open">
+      <div class="phase-header" onclick="togglePhase(this)">
+        <div class="phase-num" style="background:rgba(45,122,31,0.08);color:var(--accent);">1</div>
+        <div class="phase-meta">
+          <div class="phase-name">Before you open the AI</div>
+          <div class="phase-when">5–10 minutes of thinking — before any tool is opened</div>
+        </div>
+        <div class="phase-chevron">▶</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Define the problem in one sentence</div><div class="phase-step-desc">Not the features — the problem being solved. Write it down. Everything the AI builds should answer to this sentence.</div><div class="phase-step-note">Why: Claude makes dozens of small decisions while building. A clear problem statement anchors every one of them.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Write the user flow step by step</div><div class="phase-step-desc">What does a user actually do? Walk through every action in plain English. Not a design document — just the sequence.</div><div class="phase-step-note">Why: The AI can only build what you can describe. If you can't walk through it, the AI will invent its own version.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Decide what data you need to store</div><div class="phase-step-desc">List the things your app needs to remember. Name them and what each contains. Don't worry about technical structure yet.</div><div class="phase-step-note">Why: Your database is the hardest thing to change later. Getting it right before building saves painful rework.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Set your scope boundary</div><div class="phase-step-desc">Write a list of things explicitly out of scope for this build. This prevents the AI from enthusiastically adding features you didn't ask for.</div><div class="phase-step-warn">→ When you can answer all four clearly, you're ready to open the AI. Not before.</div></div></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase(this)">
+        <div class="phase-num" style="background:rgba(21,99,168,0.08);color:var(--accent2);">2</div>
+        <div class="phase-meta">
+          <div class="phase-name">Set up the layers</div>
+          <div class="phase-when">10–15 minutes — done once per project</div>
+        </div>
+        <div class="phase-chevron">▶</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Write your project instruction file (CLAUDE.md)</div><div class="phase-step-desc">Paste your stack block from your toolkit. Add your project brief on top — the problem, the user flow, the data you're storing, what's out of scope.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Copy your skills into .claude/skills/</div><div class="phase-step-desc">Pull the relevant skill folders from your toolkit. These teach the AI how to do the specific tasks this project needs.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Copy your agents into .claude/agents/</div><div class="phase-step-desc">Feature-planner and code-reviewer go in every project. Any domain-specific agents go in their respective projects.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Create your .mcp.json</div><div class="phase-step-desc">Copy the starter template from your toolkit. Update the file path for this project. Add database connection details via environment variables — never hardcoded.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Verify everything loaded</div><div class="phase-step-desc">Open the AI and ask "what do you know about this project?" It should summarise your instruction file correctly. If it can't — something isn't loading. Fix it now.</div><div class="phase-step-warn">→ A verification check costs 2 minutes and prevents a broken foundation for the whole project.</div></div></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase(this)">
+        <div class="phase-num" style="background:rgba(107,34,196,0.08);color:var(--accent4);">3</div>
+        <div class="phase-meta">
+          <div class="phase-name">Start building</div>
+          <div class="phase-when">The main phase — most of your time lives here</div>
+        </div>
+        <div class="phase-chevron">▶</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Run the feature-planner agent first</div><div class="phase-step-desc">Before writing a single line of code, ask the agent to plan the feature. It maps the database changes, components to build, and the order to build them.</div><div class="phase-step-warn">→ Changing a plan costs nothing. Changing built code costs time and creates bugs.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Review the plan before building</div><div class="phase-step-desc">Read the plan. Does it match your mental model? Are there missing steps? Make corrections in plain English now — before any code is written.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Build in small steps — one piece at a time</div><div class="phase-step-desc">Tell the AI to build only the first item from the plan. When it's done and working, move to the second. Never ask it to build an entire feature in one go.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Test it yourself after each step</div><div class="phase-step-desc">After each piece is built, click through it yourself. Does it do what you described? Check the empty state (no data), the error state, and the happy path.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Keep your instruction file current</div><div class="phase-step-desc">As you build, your project evolves. When you add tables or finish major features, update the CLAUDE.md. An outdated brief is worse than none.</div></div></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase(this)">
+        <div class="phase-num" style="background:rgba(184,92,0,0.1);color:var(--accent3);">4</div>
+        <div class="phase-meta">
+          <div class="phase-name">Use agents for big tasks</div>
+          <div class="phase-when">When a task has parallel workstreams or needs deep specialist work</div>
+        </div>
+        <div class="phase-chevron">▶</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Know when to switch to agents</div><div class="phase-step-desc">Two signals: the task has two or more clearly separate workstreams, or it would drain a single session's memory before it's done. Not every task needs this.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Write a clear parallel brief</div><div class="phase-step-desc">Describe both workstreams explicitly and ask the AI to work on them simultaneously. Be specific about what each should produce and what format to return in.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Review, then direct the next step</div><div class="phase-step-desc">When agents report back, treat their output as a briefing — not a final answer. Read it critically, then give one clear next instruction.</div><div class="phase-step-warn">→ You stay in control of direction. Agents do the work; you make the decisions about what to do with it.</div></div></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase(this)">
+        <div class="phase-num" style="background:rgba(192,57,43,0.1);color:var(--red);">5</div>
+        <div class="phase-meta">
+          <div class="phase-name">Before you ship</div>
+          <div class="phase-when">Non-negotiable gate before anything goes live</div>
+        </div>
+        <div class="phase-chevron">▶</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Run the code-reviewer agent</div><div class="phase-step-desc">Before merging any significant feature, ask the reviewer agent to check what was built. It explains everything in plain English so you understand what to fix — not just that something is wrong.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Walk through the user flow yourself</div><div class="phase-step-desc">Open the preview and go through the exact flow you wrote in Phase 1, step by step. Every step. The bugs usually live in the transitions between steps.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Check the three states every screen must have</div><div class="phase-step-desc">Real data view. Empty state (no data). Error state (something failed). If any of the three is missing or broken, fix it before shipping.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Confirm no secrets are in the code</div><div class="phase-step-desc">Ask the AI to check all changed files for hardcoded passwords, API keys, or credentials. This takes 30 seconds and is the one mistake that's both easy to make and genuinely serious.</div><div class="phase-step-warn">→ A secret committed to version control — even briefly — can be found by automated scanners instantly.</div></div></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-header" onclick="togglePhase(this)">
+        <div class="phase-num" style="background:rgba(26,122,63,0.1);color:var(--green);">6</div>
+        <div class="phase-meta">
+          <div class="phase-name">After the project</div>
+          <div class="phase-when">5 minutes — the phase most people skip, but shouldn't</div>
+        </div>
+        <div class="phase-chevron">▶</div>
+      </div>
+      <div class="phase-body">
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Update your instruction file with what changed</div><div class="phase-step-desc">Add new tables, routes, or patterns. Change the "current focus" section. Make it accurate for the next session — not a snapshot from the start.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Update your toolkit if you refined anything</div><div class="phase-step-desc">If you improved a skill or agent mid-project, update the file in your toolkit repo and commit it. That improvement now applies to every future project.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">Write a one-paragraph "what I learned" note</div><div class="phase-step-desc">What worked well? What did the AI get wrong repeatedly? What would you set up differently next time? Three minutes now, hours saved next project.</div></div></div>
+        <div class="phase-step"><div class="phase-dot"></div><div><div class="phase-step-title">If you kept re-explaining something — make it a skill</div><div class="phase-step-desc">If you found yourself explaining the same process or format more than twice, capture it as a skill now while the context is fresh. You stop paying the re-explanation tax on every future project.</div><div class="phase-step-warn">→ Skills compound. Every refinement makes every future project better from day one.</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== WORKFLOW ===== -->
+<section id="workflow">
+  <div class="section-eyebrow">The shift</div>
+  <h1>Working with<br><em>vs without</em> agents</h1>
+  <p class="lead">The real difference isn't speed — it's where your attention goes. Without agents, you are the process. With agents, you direct the process.</p>
+
+  <div class="workflow-compare">
+    <div class="workflow-col">
+      <div class="workflow-head without">Without agents</div>
+      <div class="workflow-body without">
+        <div class="workflow-step without"><div class="ws-dot"></div><div class="ws-text"><strong>You ask for something</strong><div class="ws-wait">↓ wait for response</div></div></div>
+        <div class="workflow-step without"><div class="ws-dot"></div><div class="ws-text"><strong>You review the output</strong><div class="ws-wait">↓ go back and forth</div></div></div>
+        <div class="workflow-step without"><div class="ws-dot"></div><div class="ws-text"><strong>You ask for the next thing</strong><div class="ws-wait">↓ wait again</div></div></div>
+        <div class="workflow-step without"><div class="ws-dot"></div><div class="ws-text"><strong>You review again</strong><div class="ws-wait">↓ repeat 6–10 times</div></div></div>
+        <div class="workflow-step without"><div class="ws-dot"></div><div class="ws-text"><strong>You ask it to check for issues</strong><div class="ws-wait">↓ another wait</div></div></div>
+        <div class="workflow-step without"><div class="ws-dot"></div><div class="ws-text"><strong>You manually find problems</strong><div class="ws-wait">↓ fix, re-check, repeat</div></div></div>
+        <div class="workflow-step without"><div class="ws-dot"></div><div class="ws-text"><strong>You decide it's done</strong></div></div>
+      </div>
+    </div>
+    <div class="workflow-col">
+      <div class="workflow-head with">With agents</div>
+      <div class="workflow-body with">
+        <div class="workflow-step with"><div class="ws-dot"></div><div class="ws-text"><strong>You define the full task once</strong><div class="ws-auto">↓ agents fan out in parallel</div></div></div>
+        <div class="workflow-step with"><div class="ws-dot"></div><div class="ws-text"><strong>You do something else</strong><div class="ws-auto">↓ agents are working</div></div></div>
+        <div class="workflow-step with"><div class="ws-dot"></div><div class="ws-text"><strong>One combined report arrives</strong><div class="ws-auto">↓ all findings in one place</div></div></div>
+        <div class="workflow-step with"><div class="ws-dot"></div><div class="ws-text"><strong>You review once, decide once</strong><div class="ws-auto">↓ one clear direction</div></div></div>
+        <div class="workflow-step with"><div class="ws-dot"></div><div class="ws-text"><strong>Quality checks run automatically</strong><div class="ws-auto">↓ hooks catch errors before you look</div></div></div>
+        <div class="workflow-step with"><div class="ws-dot"></div><div class="ws-text"><strong>Security scan runs on every PR</strong><div class="ws-auto">↓ you only hear if there's a problem</div></div></div>
+        <div class="workflow-step with"><div class="ws-dot"></div><div class="ws-text"><strong>Daily summary waiting in the morning</strong></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>What actually changes</h2>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="color:var(--red);">Without agents</div>
+      <div class="card-body">Your time equals the AI's speed. You're blocked waiting for each step. You're responsible for remembering every quality check. Problems get discovered after they're shipped. Each session starts from scratch re-explaining context.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--accent);">With agents</div>
+      <div class="card-body">Your time is decoupled from the AI's speed. You direct while it works. Quality checks run whether you remember to ask or not. Problems get caught before you look. Context loads automatically from your toolkit every session.</div>
+    </div>
+  </div>
+
+  <h2>The role you play</h2>
+  <div class="card">
+    <div class="card-body" style="font-size:15px;line-height:1.8;">
+      Without agents, you are the <strong style="color:var(--text);">dispatcher</strong> — give a task, wait, give the next one.<br>
+      With agents, you become the <strong style="color:var(--accent);">director</strong> — define the work once, specialists run it, you come back to outcomes.<br><br>
+      The biggest shift: you stop being the person who <em>checks things</em> and start being the person who only hears about things that <em>actually need a decision</em>.
+    </div>
+  </div>
+</section>
+
+<!-- ===== FLOWS ===== -->
+<section id="flows">
+  <div class="section-eyebrow">How agents work</div>
+  <h1>Four automation<br><em>patterns</em></h1>
+  <p class="lead">Every always-on or parallel workflow fits one of these four patterns. Each one removes a different kind of back-and-forth from your day.</p>
+
+  <!-- Flow 1 -->
+  <div class="agent-type at1">
+    <div class="agent-type-name">Pattern 1 — Parallel specialists</div>
+    <div class="agent-type-tag">TRIGGERED BY YOU · RUNS SIMULTANEOUSLY · YOU WAIT ONCE</div>
+    <div class="agent-type-desc">You give one instruction. Multiple specialist agents fan out and work on different parts of the same task at the same time. You wait for the longest task, not the sum of all tasks. One combined report comes back.</div>
+    <div class="agent-type-how">
+      You say: "Work on these three things at the same time..."<br>
+      → Agent A researches the topic<br>
+      → Agent B reads your existing work<br>
+      → Agent C checks for problems<br>
+      → All three run simultaneously → one combined report → you review once
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">How it flows</div>
+    <div class="result-box"><div class="result-title">You give one instruction</div><div class="result-desc">"Work on all of this simultaneously"</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0">
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+    </div>
+    <div class="parallel-row">
+      <div class="parallel-node" style="border-color:rgba(107,34,196,0.2)"><div class="parallel-label" style="color:var(--accent4)">Specialist A</div><div class="parallel-desc">researches the topic</div></div>
+      <div class="parallel-node" style="border-color:rgba(21,99,168,0.2)"><div class="parallel-label" style="color:var(--accent2)">Specialist B</div><div class="parallel-desc">reads your existing work</div></div>
+      <div class="parallel-node" style="border-color:rgba(184,92,0,0.2)"><div class="parallel-label" style="color:var(--accent3)">Specialist C</div><div class="parallel-desc">checks for problems</div></div>
+    </div>
+    <div style="text-align:center;margin:4px 0;font-size:11px;color:var(--muted);font-style:italic;">all running at the same time — you wait once, not three times</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+    </div>
+    <div class="result-box"><div class="result-title">All findings combined into one report</div><div class="result-desc">Waiting for you when they're done</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="result-box" style="border-color:rgba(45,122,31,0.2)"><div class="result-title" style="color:var(--accent)">You review once and decide</div><div class="result-desc">One decision, not three separate back-and-forths</div></div>
+  </div>
+
+  <!-- Flow 2 -->
+  <div class="agent-type at2" style="margin-top:40px;">
+    <div class="agent-type-name">Pattern 2 — Event triggered</div>
+    <div class="agent-type-tag">NOT TRIGGERED BY YOU · RESPONDS TO WHAT HAPPENS · SILENT UNLESS THERE'S A PROBLEM</div>
+    <div class="agent-type-desc">Something happens in your project — code is saved, a file is uploaded, a pull request is opened. An agent wakes up automatically, runs its checks, and only notifies you if it finds something that needs your attention. Silence means everything is fine.</div>
+    <div class="agent-type-how">
+      Event happens (you didn't trigger it) →<br>
+      Agent wakes up and reads what happened →<br>
+      Agent runs its checks →<br>
+      Problem found: you get a specific notification with a plain English fix<br>
+      No problem: nothing happens — you were never in the loop
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">How it flows</div>
+    <div class="result-box" style="border-style:dashed;border-color:var(--border2)"><div class="result-title" style="color:var(--muted)">You are elsewhere — working on something else or not at your desk</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="result-box"><div class="result-title">Something happens in your project</div><div class="result-desc">Code is saved · file is uploaded · pull request is opened</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="result-box" style="border-color:rgba(107,34,196,0.2)"><div class="result-title" style="color:var(--accent4)">Agent wakes up automatically</div><div class="result-desc">Reads what happened using its connected tools</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="result-box" style="border-color:rgba(107,34,196,0.2)"><div class="result-title" style="color:var(--accent4)">Agent runs its checks</div><div class="result-desc">Looks for problems, flags issues, measures quality</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="branch-row">
+      <div class="branch-node branch-bad"><div class="branch-title">Problem found</div><div class="branch-desc">You get a notification — specific issue + plain English fix</div></div>
+      <div class="branch-node branch-good"><div class="branch-title">All clear</div><div class="branch-desc">Nothing happens. Silence means safe.</div></div>
+    </div>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);font-style:italic;">You were never asked to do anything — the agent handled it</div>
+  </div>
+
+  <!-- Flow 3 -->
+  <div class="agent-type at3" style="margin-top:40px;">
+    <div class="agent-type-name">Pattern 3 — Scheduled (always-on)</div>
+    <div class="agent-type-tag">RUNS ON A CLOCK · NO LAPTOP NEEDED · DELIVERS BEFORE YOUR DAY STARTS</div>
+    <div class="agent-type-desc">A clock you set once. The agent runs in the cloud on a schedule — every morning, every hour, every week. Your laptop doesn't need to be open. You come back to a briefing that was prepared while you were asleep or doing something else.</div>
+    <div class="agent-type-how">
+      You set the schedule once ("every day at 8am") →<br>
+      Clock fires → agent runs in the cloud →<br>
+      Reads what happened (commits, changes, data) →<br>
+      Summarises in plain English →<br>
+      Delivers to your phone before you start your day
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">How it flows</div>
+    <div class="result-box"><div class="result-title">Clock hits the time you set</div><div class="result-desc">e.g. every day at 8am — runs in the cloud, no laptop needed</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="result-box" style="border-color:rgba(184,92,0,0.2)"><div class="result-title" style="color:var(--accent3)">Agent reads what happened since last run</div><div class="result-desc">Connects to your tools — code, files, data</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="parallel-row">
+      <div class="parallel-node" style="border-color:rgba(184,92,0,0.2)"><div class="parallel-label" style="color:var(--accent3)">What changed</div><div class="parallel-desc">In plain English, not technical jargon</div></div>
+      <div class="parallel-node" style="border-color:rgba(184,92,0,0.2)"><div class="parallel-label" style="color:var(--accent3)">Anything risky</div><div class="parallel-desc">Areas touched more than expected</div></div>
+      <div class="parallel-node" style="border-color:rgba(184,92,0,0.2)"><div class="parallel-label" style="color:var(--accent3)">What needs attention</div><div class="parallel-desc">Unfinished items, open flags</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0">
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+      <div style="text-align:center;"><div class="arrow-down"></div></div>
+    </div>
+    <div class="result-box" style="border-color:rgba(45,122,31,0.2)"><div class="result-title" style="color:var(--accent)">Summary delivered to your phone</div><div class="result-desc">Slack, email, or wherever you check first — before you sit down</div></div>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted);font-style:italic;">You open your phone in the morning — it's already there. You didn't ask for it.</div>
+  </div>
+
+  <!-- Flow 4 -->
+  <div class="agent-type at4" style="margin-top:40px;">
+    <div class="agent-type-name">Pattern 4 — Self-correcting loop</div>
+    <div class="agent-type-tag">BAKED INTO EVERY ACTION · AGENT FIXES ITS OWN MISTAKES · YOU NEVER SEE THE ERROR</div>
+    <div class="agent-type-desc">A quality rule that fires automatically after every action the AI takes. The agent makes a change, the check runs, if something is wrong the agent reads the error and fixes it — before you ever look. You receive clean output, not broken output you have to debug.</div>
+    <div class="agent-type-how">
+      Agent makes a change →<br>
+      Quality check runs automatically (rule you set once) →<br>
+      Passes: agent moves on →<br>
+      Fails: agent reads the error, fixes it, re-runs the check →<br>
+      Loop continues until it passes — you never saw the mistake
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-title">How it flows</div>
+    <div class="result-box"><div class="result-title">Agent makes a change</div><div class="result-desc">Writes a file, edits code, adds a function</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="result-box" style="border-color:rgba(45,122,31,0.2)"><div class="result-title" style="color:var(--accent)">Quality check runs automatically</div><div class="result-desc">A rule you set once — always fires after every change</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="branch-row">
+      <div class="branch-node branch-good"><div class="branch-title">Passes</div><div class="branch-desc">Agent moves on — no interruption, no delay. You never hear about it.</div></div>
+      <div class="branch-node branch-bad"><div class="branch-title">Fails</div><div class="branch-desc">Agent reads the error message, understands what went wrong, and fixes it itself.</div></div>
+    </div>
+    <div class="arrow-down" style="margin:0 auto;margin-top:8px;"></div>
+    <div class="result-box" style="border-color:rgba(192,57,43,0.2)"><div class="result-title" style="color:var(--red)">Agent fixes and re-runs the check</div><div class="result-desc">Loop continues until it passes — automatically, without your involvement</div></div>
+    <div class="arrow-down" style="margin:0 auto"></div>
+    <div class="result-box" style="border-color:rgba(45,122,31,0.2)"><div class="result-title" style="color:var(--accent)">You receive clean output</div><div class="result-desc">The mistake happened, was fixed, and you never saw it</div></div>
+  </div>
+
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section id="skills">
+  <div class="section-eyebrow">What skills are</div>
+  <h1>Skills — teaching<br><em>the AI your way</em></h1>
+  <p class="lead">A skill is a plain text instruction file that teaches the AI how to do a specific task exactly the way you want it done. Not a generic version — your version. Your format, your rules, your output.</p>
+
+  <h2>Two types of skill</h2>
+  <div class="skill-type-row">
+    <div class="skill-type-box global">
+      <div class="skill-type-label">Global</div>
+      <div class="skill-type-title">Travels with you everywhere</div>
+      <div class="skill-type-path">~/.claude/skills/</div>
+      <div class="skill-type-desc">Loaded automatically in every Claude Code session, regardless of which project you're in. These are universal capabilities you always want available — creating documents, writing SEO copy, generating slide decks.</div>
+      <ul class="skill-type-list">
+        <li>Applies to every project you ever open</li>
+        <li>Lives on your machine, not in any repo</li>
+        <li>Mainly community skills — not project-specific</li>
+        <li>Set up once, available forever</li>
+      </ul>
+    </div>
+    <div class="skill-type-box project">
+      <div class="skill-type-label">Project</div>
+      <div class="skill-type-title">Specific to one product</div>
+      <div class="skill-type-path">[project]/.claude/skills/</div>
+      <div class="skill-type-desc">Only loads when Claude Code is opened inside that project folder. These encode domain expertise specific to one product — a particular analysis format, a specific writing style, proprietary rules.</div>
+      <ul class="skill-type-list">
+        <li>Only active for this one project</li>
+        <li>Committed to the project repo</li>
+        <li>Usually your own custom-written skills</li>
+        <li>Encodes knowledge nobody else has</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="info-box">The mental model: global skills are tools you bring to every job site. Project skills are the specific playbook for this particular client. Same contractor, different briefing per engagement.</div>
+
+  <h2>What a skill actually looks like</h2>
+  <p style="margin-bottom:16px;">A skill is a folder with one file inside it — <code style="font-family:'DM Mono',monospace;font-size:12px;background:var(--surface2);padding:1px 6px;border-radius:3px;">SKILL.md</code>. The file has two parts: a short header (the description Claude scans to know when to load it) and the detailed instructions Claude follows when it does.</p>
+
+  <div class="skill-anatomy">
+    <div class="skill-anatomy-header">example skill file — .claude/skills/listing-writer/SKILL.md</div>
+    <div class="skill-anatomy-body">
+      <div class="skill-file"><span class="sk-comment">---  ← this header is what Claude reads first</span>
+<span class="sk-key">name:</span> <span class="sk-val">listing-writer</span>
+<span class="sk-key">description:</span> <span class="sk-val">Use when writing product listings, titles,</span>
+  <span class="sk-val">bullet points, or descriptions for e-commerce.</span>
+  <span class="sk-val">Triggers on: listing, product copy, title, bullets.</span>
+<span class="sk-comment">---  ← Claude loads the full instructions below only when relevant</span>
+
+<span class="sk-heading"># Listing writer skill</span>
+
+<span class="sk-body">Always follow this structure:</span>
+
+<span class="sk-heading">## Title</span>
+<span class="sk-body">- 60–80 characters max
+- Lead with the primary benefit, not the product name
+- No ALL CAPS, no excessive punctuation</span>
+
+<span class="sk-heading">## Bullets (always 5)</span>
+<span class="sk-body">- Each starts with a bold benefit label
+- Lead with what the customer gains, not what the product has
+- 15–25 words per bullet</span>
+
+<span class="sk-heading">## Tone rules</span>
+<span class="sk-body">- Confident and direct — never wishy-washy
+- No: innovative, revolutionary, amazing, game-changing
+- Yes: specific, concrete, benefit-led language</span></div>
+      <p style="font-size:12px;color:var(--muted);">Claude reads the description (above the dashes) for every skill at session start — about 100 tokens total. It only loads the full instructions when a task matches. This keeps sessions fast without sacrificing capability.</p>
+    </div>
+  </div>
+
+  <h2>The catalogue — what goes global vs project</h2>
+
+  <div class="skill-catalogue">
+    <div class="skill-cat-group">
+      <div class="skill-cat-label">Document & output creation</div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">docx — Word document creator</div><div class="skill-desc">Creates properly formatted Word documents with headings, tables, page numbers. Used for reports, proposals, SOPs. Community-built, production quality.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">pptx — slide deck builder</div><div class="skill-desc">Creates PowerPoint presentations with layouts, charts, and data visualisations. Useful for investor updates, team briefings, client presentations.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">xlsx — spreadsheet creator</div><div class="skill-desc">Creates and manipulates Excel spreadsheets with formulas, charts, and structured data. Useful for financial models, tracking sheets, data exports.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">pdf — PDF toolkit</div><div class="skill-desc">Extracts, creates, merges, and fills PDF documents. Useful for processing supplier documents, generating reports, handling uploaded files.</div></div>
+      </div>
+    </div>
+
+    <div class="skill-cat-group">
+      <div class="skill-cat-label">Design & frontend</div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">frontend-design — production UI builder</div><div class="skill-desc">Teaches the AI to produce distinctive, production-grade interfaces that avoid generic AI aesthetics. Covers typography, spacing, component patterns, and responsive design.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">revealjs — browser-based presentations</div><div class="skill-desc">Generates HTML presentations rendered in a browser — modern animations, shareable as a URL. An alternative to PowerPoint for demos and pitches.</div></div>
+      </div>
+    </div>
+
+    <div class="skill-cat-group">
+      <div class="skill-cat-label">SEO & marketing</div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">claude-seo — universal SEO skill</div><div class="skill-desc">13 sub-skills covering technical SEO, E-E-A-T, schema markup, and AI search optimisation. Integrates with Ahrefs and Semrush MCP for live data.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">coreyhaines marketing stack</div><div class="skill-desc">35 skills covering cold email, ad creative, CRO, competitor pages, and churn prevention. Built by a practitioner for SaaS go-to-market work.</div></div>
+      </div>
+    </div>
+
+    <div class="skill-cat-group">
+      <div class="skill-cat-label">Database & code (global stack skills)</div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">supabase-query-helper</div><div class="skill-desc">Enforces your query patterns — all queries through a central file, correct RLS (row-level security) patterns, migration conventions. Prevents common security mistakes.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-g">global</span>
+        <div class="skill-info"><div class="skill-name">frontend-component-builder</div><div class="skill-desc">Your UI conventions — loading states, error states, empty states, responsive classes, component file structure. Ensures every component the AI builds matches your standards.</div></div>
+      </div>
+    </div>
+
+    <div class="skill-cat-group">
+      <div class="skill-cat-label">Project-specific (written by you, not found online)</div>
+      <div class="skill-row">
+        <span class="skill-scope scope-p">project</span>
+        <div class="skill-info"><div class="skill-name">stakeholder-brief-writer</div><div class="skill-desc">Encodes your communication formats — investor updates, co-founder briefings, VA SOPs. Knows who your collaborators are and what format each one expects.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-p">project</span>
+        <div class="skill-info"><div class="skill-name">domain-specific analysis skill</div><div class="skill-desc">Whatever your product's core analysis looks like — your taxonomy, your output format, your thresholds, your rules. Nobody on GitHub has this. You write it once, it runs forever.</div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-scope scope-p">project</span>
+        <div class="skill-info"><div class="skill-name">product listing writer (e-commerce)</div><div class="skill-desc">Your listing format — title structure, bullet format, word count, tone rules, forbidden words. Makes the AI's first output match your format without back-and-forth.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Where to find community skills</h2>
+  <div class="source-grid">
+    <div class="source-card">
+      <div class="source-name">Anthropic official skills</div>
+      <div class="source-url">github.com/anthropics/skills</div>
+      <div class="source-desc">Production-quality skills built and maintained by Anthropic. Covers document creation, PDF handling, frontend design. Safe to install without review.</div>
+      <div class="source-tags"><span class="source-tag">trusted</span><span class="source-tag">no review needed</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">SkillsMP marketplace</div>
+      <div class="source-url">skillsmp.com</div>
+      <div class="source-desc">Community aggregator with quality filtering — minimum 2 stars required. Searchable by category. Good starting point for browsing what's available.</div>
+      <div class="source-tags"><span class="source-tag">community</span><span class="source-tag">review before install</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">VoltAgent awesome list</div>
+      <div class="source-url">github.com/VoltAgent/awesome-agent-skills</div>
+      <div class="source-desc">Curated list including official skills from Google, OpenAI, Vercel, Stripe, and the community. One of the most comprehensive collections available.</div>
+      <div class="source-tags"><span class="source-tag">curated</span><span class="source-tag">review before install</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">agentskill.sh</div>
+      <div class="source-url">agentskill.sh</div>
+      <div class="source-desc">Browse and install from 69,000+ agent skills across Claude Code, Cursor, and other tools. Wide selection but quality varies — always review first.</div>
+      <div class="source-tags"><span class="source-tag">large catalogue</span><span class="source-tag">always review</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">Cursor marketplace</div>
+      <div class="source-url">cursor.com/marketplace</div>
+      <div class="source-desc">Official plugins bundling skills, MCP servers, and subagents from partners like Figma, Stripe, Vercel, and Linear. One-click install for known tools.</div>
+      <div class="source-tags"><span class="source-tag">official partners</span><span class="source-tag">Cursor only</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-name">Your own toolkit repo</div>
+      <div class="source-url">your private GitHub repo</div>
+      <div class="source-desc">The most valuable source over time. Skills you've written and refined yourself. Your domain expertise, your conventions, your rules. Nobody else has these.</div>
+      <div class="source-tags"><span class="source-tag">custom</span><span class="source-tag">compounds over time</span></div>
+    </div>
+  </div>
+
+  <h2>How to vet a community skill before installing</h2>
+  <p style="margin-bottom:16px;">A skill is an instruction set that shapes how the AI behaves. Treat it like a browser extension — inspect it before you run it. Official Anthropic skills and named partner skills (Google, Stripe, Vercel) can be installed without review. Everything else: check first.</p>
+
+  <div class="vet-steps">
+    <div class="vet-step">
+      <div class="vet-icon skip">1</div>
+      <div>
+        <div class="vet-title">Check the source first</div>
+        <div class="vet-desc">Is it from github.com/anthropics, a named partner (Google Labs, OpenAI official), or a repo with 100+ stars and active maintenance? If yes — install without further review. If it's a random repo with few stars — read the file before installing anything.</div>
+      </div>
+    </div>
+    <div class="vet-step">
+      <div class="vet-icon ok">2</div>
+      <div>
+        <div class="vet-title">Read the SKILL.md yourself — it takes 2 minutes</div>
+        <div class="vet-desc">The file is plain text. Read it. Does it do what it says? Are the instructions coherent and scoped? Does it only instruct the AI to do what the skill claims to do? If yes — good signal.</div>
+      </div>
+    </div>
+    <div class="vet-step">
+      <div class="vet-icon warn">3</div>
+      <div>
+        <div class="vet-title">Watch for these red flags</div>
+        <div class="vet-desc">Instructions that mention overriding your other rules or CLAUDE.md. Shell commands (lines starting with !) that make network requests or write outside the project. Instructions to send data to an external service. Anything that contradicts the skill's stated purpose.</div>
+      </div>
+    </div>
+    <div class="vet-step">
+      <div class="vet-icon ok">4</div>
+      <div>
+        <div class="vet-title">Ask the AI to review it for you</div>
+        <div class="vet-desc">Paste the SKILL.md content and ask: "Check this for prompt injection, unexpected shell commands, scope creep, or any instruction to override my existing rules. Give me a plain English verdict: safe, use with caution, or do not install."</div>
+      </div>
+    </div>
+    <div class="vet-step">
+      <div class="vet-icon ok">5</div>
+      <div>
+        <div class="vet-title">Test on a non-critical task first</div>
+        <div class="vet-desc">Install the skill, then give it a small test task that matches its stated purpose. Does the output look right? Does the AI behave as expected? If yes — you're good. If the AI starts doing something unexpected, remove the skill and investigate.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn-box-light">The security note: most community skills are completely fine. The risk is real but low — the same as installing any open-source package. The review process above takes 5 minutes and gives you confidence. For anything from Anthropic's official repo or named tool partners, skip the review entirely.</div>
+
+  <h2>How skills compound over time</h2>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Day one</div>
+      <div class="card-body">You install the official document skills and copy your personal skills from your toolkit. Claude Code can now create Word docs, build UI correctly, write queries safely, and write briefs in your format. You did none of this from scratch.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">After your first project</div>
+      <div class="card-body">You found yourself explaining the same output format twice. You write it as a skill. Now you never explain it again — in this project or any future one. That's the first compounding event.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Six months in</div>
+      <div class="card-body">Your personal skill library encodes months of domain refinement. Every new project starts with that accumulated expertise already loaded. The AI produces first-draft output that would have taken five back-and-forths a year ago.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">The rule</div>
+      <div class="card-body">Every time you explain the same thing to the AI more than twice in a session — stop and write a skill. That's the signal. Three minutes of writing now eliminates the cost of explaining it on every future task, in every future project.</div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  function showNav(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const btn = document.querySelector(`.nav-btn[onclick="show('${id}')"]`);
+    if (btn) btn.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  let currentGs = 0;
+  function gsGo(n) {
+    const panels = document.querySelectorAll('.gs-panel');
+    const steps = document.querySelectorAll('.gs-prog-step');
+    panels.forEach(p => p.classList.remove('active'));
+    steps.forEach((s,i) => {
+      s.classList.remove('current','done');
+      if (i < n) s.classList.add('done');
+      if (i === n) s.classList.add('current');
+    });
+    document.getElementById('gs-' + n).classList.add('active');
+    currentGs = n;
+    window.scrollTo(0,0);
+  }
+
+  function toggleCheck(row) {
+    row.classList.toggle('checked');
+  }
+
+  function togglePhase(header) {
+    const phase = header.parentElement;
+    phase.classList.toggle('open');
+  }
+
+  let activeCat = 'all';
+  function setCat(cat, btn) {
+    activeCat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterTerms();
+  }
+
+  function filterTerms() {
+    const q = document.getElementById('term-search').value.toLowerCase();
+    document.querySelectorAll('.term-card').forEach(card => {
+      const matchCat = activeCat === 'all' || card.dataset.cat === activeCat;
+      const text = (card.dataset.search + ' ' + card.querySelector('.term-word').textContent + ' ' + card.querySelector('.term-plain').textContent).toLowerCase();
+      const matchQ = !q || text.includes(q);
+      card.style.display = (matchCat && matchQ) ? 'block' : 'none';
+    });
+  }
+</script>
+</body>
+</html>
