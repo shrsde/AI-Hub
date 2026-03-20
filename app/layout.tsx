@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
 import { ExplainTool } from "@/components/ExplainTool";
 import { SearchModal } from "@/components/SearchModal";
 
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Navigation />
         <main className="flex-1">{children}</main>
+        <Footer />
         <ExplainTool />
         <SearchModal />
       </body>

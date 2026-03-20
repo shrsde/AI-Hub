@@ -15,11 +15,19 @@ const links = [
   { href: "/flows", label: "Agent Flows" },
 ];
 
+function Logo() {
+  return (
+    <span className="nav-logo text-[17px] font-extrabold italic tracking-[0.04em] text-foreground select-none">
+      AI<span className="text-secondary/40 mx-[1px]">·</span>HUB
+    </span>
+  );
+}
+
 function SearchButton({ className }: { className?: string }) {
   return (
     <button
       onClick={() => window.dispatchEvent(new CustomEvent("open-search"))}
-      className={`flex items-center justify-center w-8 h-8 rounded-lg text-muted hover:text-foreground hover:bg-surface2 transition-colors cursor-pointer ${className || ""}`}
+      className={`flex items-center justify-center w-8 h-8 rounded-lg text-muted hover:text-foreground hover:bg-[rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer ${className || ""}`}
       title="Search (⌘K)"
     >
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -34,7 +42,6 @@ export function Navigation() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Lock body scroll when menu open
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -46,20 +53,22 @@ export function Navigation() {
     };
   }, [menuOpen]);
 
-  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border backdrop-blur-xl bg-[rgba(255,255,255,0.85)]">
+    <nav className="sticky top-0 z-50 border-b border-[rgba(255,255,255,0.4)] backdrop-blur-2xl bg-[rgba(255,255,255,0.55)] shadow-[0_1px_12px_rgba(0,0,0,0.03),inset_0_-1px_0_rgba(255,255,255,0.3)]">
       <div className="flex items-center gap-0 px-6 max-w-[1100px] mx-auto">
-        {/* Logo — always visible */}
+        {/* Logo */}
         <Link
           href="/"
-          className="text-[16px] font-bold italic text-foreground whitespace-nowrap pr-5 py-4 border-r border-border mr-2 tracking-tight"
+          className="flex items-center gap-2.5 whitespace-nowrap pr-5 py-3 border-r border-border mr-2 group"
         >
-          AI Hub
+          <Logo />
+          <span className="version-pill text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded-full">
+            v1.0
+          </span>
         </Link>
 
         {/* Desktop nav links */}
@@ -73,10 +82,10 @@ export function Navigation() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`nav-link px-3.5 py-4 text-[12px] font-medium whitespace-nowrap tracking-wide uppercase ${
+                className={`nav-link px-3.5 py-4 text-[11.5px] font-medium whitespace-nowrap tracking-[0.06em] uppercase transition-colors duration-200 ${
                   isActive
-                    ? "active text-primary"
-                    : "text-muted hover:text-foreground"
+                    ? "active text-foreground"
+                    : "text-muted/70 hover:text-foreground"
                 }`}
               >
                 {link.label}
@@ -85,7 +94,7 @@ export function Navigation() {
           })}
         </div>
 
-        {/* Desktop search button */}
+        {/* Desktop search */}
         <SearchButton className="hidden sm:flex ml-auto" />
 
         {/* Mobile: search + hamburger */}
@@ -93,7 +102,7 @@ export function Navigation() {
           <SearchButton />
           <button
             onClick={() => setMenuOpen(true)}
-            className="flex items-center justify-center w-9 h-9 rounded-lg text-foreground hover:bg-surface2 transition-colors cursor-pointer"
+            className="flex items-center justify-center w-9 h-9 rounded-lg text-foreground hover:bg-[rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer"
             aria-label="Open menu"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -103,17 +112,19 @@ export function Navigation() {
         </div>
       </div>
 
-      {/* Mobile overlay menu */}
+      {/* Mobile overlay */}
       {menuOpen && (
         <div className="fixed inset-0 z-[60] bg-background sm:hidden">
-          {/* Top bar */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <Link
               href="/"
               onClick={() => setMenuOpen(false)}
-              className="text-[16px] font-bold italic text-foreground tracking-tight"
+              className="flex items-center gap-2.5"
             >
-              AI Hub
+              <Logo />
+              <span className="version-pill text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded-full">
+                v1.0
+              </span>
             </Link>
             <button
               onClick={() => setMenuOpen(false)}
@@ -126,7 +137,6 @@ export function Navigation() {
             </button>
           </div>
 
-          {/* Nav links */}
           <div className="flex flex-col px-6 py-4">
             {links.map((link) => {
               const isActive =
@@ -138,10 +148,10 @@ export function Navigation() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`py-4 text-base font-medium border-b border-border transition-colors ${
+                  className={`py-4 text-[15px] font-medium border-b border-border transition-colors duration-200 ${
                     isActive
-                      ? "text-primary"
-                      : "text-foreground hover:text-primary"
+                      ? "text-foreground"
+                      : "text-muted hover:text-foreground"
                   }`}
                 >
                   {link.label}

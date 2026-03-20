@@ -27,6 +27,15 @@ const features = [
   },
 ];
 
+const processSteps = [
+  { num: 1, title: "Plan", glyph: "◎", href: "/process" },
+  { num: 2, title: "Set up", glyph: "◧", href: "/setup" },
+  { num: 3, title: "Build", glyph: "▸", href: "/process" },
+  { num: 4, title: "Agents", glyph: "⬡", href: "/flows" },
+  { num: 5, title: "Ship", glyph: "△", href: "/process" },
+  { num: 6, title: "Learn", glyph: "↻", href: "/skills" },
+];
+
 const steps = [
   { num: 1, title: "Get Started", desc: "Install tools, open terminal, first session", href: "/get-started", tag: "start here", tagClass: "tag tag-primary" },
   { num: 2, title: "Terms", desc: "24 terms explained in plain English", href: "/terms", tag: "reference", tagClass: "tag tag-secondary" },
@@ -58,35 +67,47 @@ export default function Home() {
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/get-started"
-                className="inline-flex items-center gap-2 rounded-xl bg-foreground px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+                className="glass-btn-primary inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium"
               >
-                Get started &rarr;
+                Get Started &rarr;
               </Link>
               <Link
                 href="/terms"
-                className="inline-flex items-center rounded-xl border border-border2 bg-white px-5 py-2.5 text-sm font-medium text-foreground hover:bg-surface2 transition-colors"
+                className="glass-btn inline-flex items-center rounded-xl px-5 py-2.5 text-sm font-medium"
               >
-                Browse glossary
+                Learn the Terms
               </Link>
             </div>
           </div>
 
-          {/* Side metrics */}
-          <div className="bento-cell flex flex-col justify-center items-center text-center gap-5 py-8">
-            <div>
-              <span className="block font-mono text-3xl font-bold text-primary">7</span>
-              <span className="text-xs text-muted">sections</span>
+          {/* 6-Step Process visual */}
+          <div className="glass-card flex flex-col justify-center p-5">
+            <p className="text-[10px] font-mono uppercase tracking-widest text-muted mb-3 text-center">
+              The 6-step process
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              {processSteps.map((step) => (
+                <Link
+                  key={step.num}
+                  href={step.href}
+                  className="glass-cell group rounded-xl px-2 py-3 text-center transition-all duration-300 ease-out hover:shadow-md hover:border-border2"
+                >
+                  <span className="block text-base text-muted/50 group-hover:text-primary transition-colors duration-300">
+                    {step.glyph}
+                  </span>
+                  <p className="text-[10px] font-semibold text-foreground/70 group-hover:text-foreground mt-1 transition-colors duration-300">
+                    {step.title}
+                  </p>
+                  <span className="block h-0.5 w-0 mx-auto mt-1.5 rounded-full bg-primary/40 group-hover:w-4 transition-all duration-300" />
+                </Link>
+              ))}
             </div>
-            <div className="w-8 h-px bg-border2" />
-            <div>
-              <span className="block font-mono text-3xl font-bold text-secondary">24</span>
-              <span className="text-xs text-muted">terms</span>
-            </div>
-            <div className="w-8 h-px bg-border2" />
-            <div>
-              <span className="block font-mono text-3xl font-bold text-success">Zero</span>
-              <span className="text-xs text-muted">code required</span>
-            </div>
+            <Link
+              href="/process"
+              className="mt-3 text-center text-[11px] text-primary font-medium hover:underline underline-offset-2"
+            >
+              Full process &rarr;
+            </Link>
           </div>
         </div>
       </section>
