@@ -277,6 +277,12 @@ function Step0({
 }) {
   return (
     <div>
+      <div className="info-box mb-5">
+        <p className="text-sm">
+          Don&apos;t worry about installing these one by one right now &mdash; the next steps will walk you through installing each of these directly in your terminal, with exact commands you can copy and paste.
+        </p>
+      </div>
+
       <SectionHeading>Required</SectionHeading>
       <div className="grid sm:grid-cols-3 gap-4">
         {REQUIRED_APPS.map((a) => (
@@ -325,6 +331,16 @@ function Step0({
 function Step1() {
   return (
     <div>
+      <div className="bento-cell bg-surface rounded-2xl border border-border p-5 mb-5">
+        <p className="text-sm font-semibold text-foreground mb-2">What is the terminal?</p>
+        <p className="text-sm text-muted leading-relaxed mb-3">
+          The terminal is just a text-based way to talk to your computer. Instead of clicking buttons and icons, you type short commands. That&apos;s it. It&apos;s not hacking, it&apos;s not dangerous, and you can&apos;t break your computer by typing the wrong thing &mdash; the worst that happens is you get an error message.
+        </p>
+        <p className="text-sm text-muted leading-relaxed">
+          Think of it like texting your computer instead of tapping on apps. Developers use it because it&apos;s faster, and Claude Code lives here because it needs to read and write your project files directly.
+        </p>
+      </div>
+
       <SectionHeading>How to open the terminal on Mac</SectionHeading>
       <div className="bento-cell bg-surface rounded-2xl border border-border p-5">
         <p className="text-sm text-muted leading-relaxed">
@@ -334,7 +350,7 @@ function Step1() {
           <span className="text-foreground">
             Applications &rarr; Utilities &rarr; Terminal
           </span>
-          .
+          . You&apos;ll see a small window with a blinking cursor &mdash; that&apos;s it, you&apos;re in.
         </p>
       </div>
 
@@ -388,31 +404,53 @@ function Step1() {
 function Step2() {
   return (
     <div>
-      <SectionHeading>Install Claude Code globally</SectionHeading>
+      <div className="bento-cell bg-surface rounded-2xl border border-border p-5 mb-5">
+        <p className="text-sm font-semibold text-foreground mb-2">What is Claude Code?</p>
+        <p className="text-sm text-muted leading-relaxed mb-3">
+          Claude Code is an AI assistant that lives in your terminal and works directly inside your project files. It can read, write, and edit code on your behalf &mdash; all from plain English instructions.
+        </p>
+        <p className="text-sm font-semibold text-foreground mb-2">How is it different from Claude online?</p>
+        <p className="text-sm text-muted leading-relaxed mb-3">
+          <span className="text-foreground font-medium">Claude.ai (the website)</span> is like texting a smart friend &mdash; great for questions and ideas, but it can&apos;t touch your files. <span className="text-foreground font-medium">Claude Code</span> is like having that friend sit at your computer and actually build things for you. It reads your project, writes real files, runs commands, and makes changes directly.
+        </p>
+        <p className="text-sm font-semibold text-foreground mb-2">Why use Claude Code over Claude online?</p>
+        <ul className="text-sm text-muted leading-relaxed list-disc list-inside space-y-1">
+          <li>It sees your entire project &mdash; not just what you paste into a chat</li>
+          <li>It writes and edits files directly &mdash; no copy-pasting back and forth</li>
+          <li>It can run commands, install packages, and test things for you</li>
+          <li>It remembers your project rules via a simple instruction file</li>
+        </ul>
+      </div>
+
+      <SectionHeading>Install Claude Code</SectionHeading>
+      <p className="text-sm text-muted mb-3 leading-relaxed">
+        Copy and paste this command into your terminal and press Enter. It installs Claude Code so you can use it from any folder on your computer.
+      </p>
       <div className="terminal-block">
         <P>~ $</P> <C>npm install -g @anthropic-ai/claude-code</C>
       </div>
 
-      <SectionHeading>Verify the installation</SectionHeading>
+      <SectionHeading>Check that it worked</SectionHeading>
+      <p className="text-sm text-muted mb-3 leading-relaxed">
+        Type this command to confirm it installed correctly. You should see a version number appear.
+      </p>
       <div className="terminal-block">
         <P>~ $</P> <C>claude --version</C>
         <br />
         <O>1.0.12</O>
       </div>
       <p className="text-sm text-muted mt-2 leading-relaxed">
-        If you see a version number, you&apos;re all set. If not, make sure
-        Node.js is installed and try restarting your terminal.
+        If you see a version number, you&apos;re all set. If you get an error, make sure Node.js is installed (Step 1) and try closing and reopening your terminal.
       </p>
 
       <SectionHeading>Cursor extension (optional)</SectionHeading>
       <div className="bento-cell bg-surface rounded-2xl border border-border p-5">
         <p className="text-sm text-muted leading-relaxed">
-          Open Cursor, go to the Extensions panel (
-          <Kbd>Cmd</Kbd> + <Kbd>Shift</Kbd> + <Kbd>X</Kbd>), search for{" "}
+          If you installed Cursor (the code editor), you can also add Claude Code as a sidebar panel. Open Cursor, press{" "}
+          <Kbd>Cmd</Kbd> + <Kbd>Shift</Kbd> + <Kbd>X</Kbd>, search for{" "}
           <span className="text-foreground font-medium">Claude Code</span>, and
           click{" "}
-          <span className="text-primary font-medium">Install</span>. This
-          embeds Claude Code directly in your editor sidebar.
+          <span className="text-primary font-medium">Install</span>. This gives you Claude right inside your editor &mdash; but the terminal version works great on its own.
         </p>
       </div>
     </div>
@@ -422,7 +460,16 @@ function Step2() {
 function Step3() {
   return (
     <div>
+      <div className="info-box mb-5">
+        <p className="text-sm">
+          <span className="font-medium text-foreground">Why create a folder?</span> Claude Code works inside a specific folder on your computer &mdash; that folder becomes your &quot;project.&quot; Everything Claude creates (files, pages, images) will live inside it, nice and organized. Think of it like creating a new folder on your desktop for a school project &mdash; everything related goes in one place.
+        </p>
+      </div>
+
       <SectionHeading>Create a folder and start Claude</SectionHeading>
+      <p className="text-sm text-muted mb-3 leading-relaxed">
+        These three commands create a new folder, set it up for version tracking (so you can undo mistakes), and launch Claude inside it.
+      </p>
       <div className="terminal-block">
         <P>~ $</P> <C>mkdir ~/my-first-project && cd ~/my-first-project</C>
         <br />
@@ -476,6 +523,9 @@ function Step4() {
   return (
     <div>
       <SectionHeading>Navigate to your project</SectionHeading>
+      <p className="text-sm text-muted mb-3 leading-relaxed">
+        Open your terminal and navigate to the folder where your project lives. Then start Claude inside it.
+      </p>
       <div className="terminal-block">
         <P>~ $</P> <C>cd ~/Desktop/my-real-project</C>
         <br />
@@ -484,8 +534,7 @@ function Step4() {
 
       <SectionHeading>Create a CLAUDE.md</SectionHeading>
       <p className="text-sm text-muted mb-3 leading-relaxed">
-        This file tells Claude about your project &mdash; the stack,
-        conventions, and things to watch out for. Drop it in the project root.
+        A CLAUDE.md is a simple text file that tells Claude about your project &mdash; what tools you&apos;re using, what rules to follow, and what to avoid. Think of it as an onboarding document you&apos;d hand to a new team member on their first day. Drop it in your project folder and Claude reads it automatically every time you start a session.
       </p>
       <div className="terminal-block">
         <CM># CLAUDE.md &mdash; paste this template and customise</CM>
@@ -493,35 +542,35 @@ function Step4() {
         <br />
         <C># Project overview</C>
         <br />
-        <O>This is a Next.js app using TypeScript and Tailwind CSS.</O>
+        <O>This is a website built with Next.js, styled with Tailwind CSS.</O>
         <br />
         <br />
-        <C># Tech stack</C>
+        <C># Tools being used</C>
         <br />
-        <O>- Framework: Next.js 15 (App Router)</O>
+        <O>- Next.js 15 (the framework that builds the website)</O>
         <br />
-        <O>- Styling: Tailwind CSS v4</O>
+        <O>- Tailwind CSS v4 (the tool that handles all the styling)</O>
         <br />
-        <O>- Language: TypeScript</O>
+        <O>- TypeScript (a version of JavaScript with safety checks)</O>
         <br />
         <br />
-        <C># Conventions</C>
+        <C># Rules to follow</C>
         <br />
-        <O>- Use functional components with hooks</O>
+        <O>- Keep files short and focused</O>
         <br />
-        <O>- Prefer named exports</O>
+        <O>- Use simple, readable code</O>
         <br />
-        <O>- Keep files under 300 lines</O>
+        <O>- Explain what you changed after each edit</O>
         <br />
         <br />
         <C># Things to avoid</C>
         <br />
-        <O>- Do not use class components</O>
+        <O>- Don&apos;t install new tools without asking me first</O>
         <br />
-        <O>- Do not install new dependencies without asking</O>
+        <O>- Don&apos;t delete files without confirming</O>
       </div>
 
-      <SectionHeading>Verify</SectionHeading>
+      <SectionHeading>Check that it loaded</SectionHeading>
       <div className="terminal-block">
         <P>~/Desktop/my-real-project $</P> <C>claude</C>
         <br />
@@ -532,8 +581,7 @@ function Step4() {
         <H>What would you like to build?</H>
       </div>
       <p className="text-sm text-muted mt-2 leading-relaxed">
-        If you see &quot;Loaded CLAUDE.md&quot; in the output, Claude has picked
-        up your project context.
+        If you see &quot;Loaded CLAUDE.md&quot; in the output, Claude has read your project instructions and is ready to go.
       </p>
     </div>
   );
@@ -568,27 +616,18 @@ function Step5({
         </div>
       </div>
 
-      <SectionHeading>Multi-agent readiness</SectionHeading>
+      <SectionHeading>Running multiple Claudes at once</SectionHeading>
       <div className="bento-cell bg-surface rounded-2xl border border-border p-5">
         <p className="text-sm text-muted leading-relaxed">
-          Once you are comfortable with single-agent sessions, you can scale up
-          by running multiple Claude instances in parallel &mdash; each in its
-          own git worktree. This is covered in the{" "}
+          Once you&apos;re comfortable with one Claude session, you can level up by running multiple sessions at the same time &mdash; each working on a different part of your project simultaneously. It&apos;s like having a small team instead of one assistant. This is covered in the{" "}
           <Link
             href="/workflow"
             className="text-secondary underline underline-offset-2 hover:text-primary transition-colors"
           >
-            Workflow
+            With vs Without
           </Link>{" "}
-          section.
+          section &mdash; don&apos;t worry about it yet.
         </p>
-      </div>
-      <div className="terminal-block mt-4">
-        <CM># Quick preview &mdash; don&apos;t worry about this yet</CM>
-        <br />
-        <P>~ $</P> <C>git worktree add ../feature-branch feature-branch</C>
-        <br />
-        <P>~ $</P> <C>cd ../feature-branch && claude</C>
       </div>
 
       <SectionHeading>Troubleshooting</SectionHeading>
@@ -648,11 +687,13 @@ export default function GetStartedPage() {
         <div className="hidden sm:flex items-center gap-1 bg-surface rounded-2xl border border-border p-1.5 mb-6 overflow-hidden">
           {STEP_LABELS.map((label, i) => {
             let classes =
-              "flex-1 text-center text-xs py-2.5 px-1 rounded-xl cursor-pointer transition-colors ";
-            if (i < step) classes += "bg-surface2 text-muted";
-            else if (i === step)
-              classes += "bg-primary text-white font-medium";
-            else classes += "bg-surface text-muted";
+              "flex-1 text-center text-xs py-2.5 px-1 rounded-xl cursor-pointer transition-all duration-200 ";
+            if (i === step)
+              classes += "version-pill font-medium";
+            else if (i < step)
+              classes += "bg-surface2 text-muted";
+            else
+              classes += "bg-surface text-muted";
 
             return (
               <button
@@ -660,6 +701,7 @@ export default function GetStartedPage() {
                 className={classes}
                 onClick={() => setStep(i)}
               >
+                <span className="font-mono mr-1 opacity-60">{i + 1}.</span>
                 {label}
               </button>
             );

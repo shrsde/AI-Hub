@@ -4,15 +4,32 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const links = [
+const mainLinks = [
+  { href: "/", label: "Home" },
+  {
+    href: "/get-started",
+    label: "Get Started",
+    children: [
+      { href: "/terms", label: "Learn the Terms" },
+      { href: "/setup", label: "Project Setup" },
+      { href: "/workflow", label: "With vs Without" },
+    ],
+  },
+  { href: "/process", label: "6-Step Process" },
+  { href: "/flows", label: "Agents" },
+  { href: "/skills", label: "Skills" },
+];
+
+// Flat list for mobile
+const mobileLinks = [
   { href: "/", label: "Home" },
   { href: "/get-started", label: "Get Started" },
-  { href: "/terms", label: "Terms" },
-  { href: "/setup", label: "Project Setup" },
+  { href: "/terms", label: "Learn the Terms", indent: true },
+  { href: "/setup", label: "Project Setup", indent: true },
+  { href: "/workflow", label: "With vs Without", indent: true },
   { href: "/process", label: "6-Step Process" },
+  { href: "/flows", label: "Agents" },
   { href: "/skills", label: "Skills" },
-  { href: "/workflow", label: "With vs Without" },
-  { href: "/flows", label: "Agent Flows" },
 ];
 
 function Logo() {
@@ -35,6 +52,69 @@ function SearchButton({ className }: { className?: string }) {
         <path d="M10 10L14 14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
       </svg>
     </button>
+  );
+}
+
+function CheatSheetButton({ className }: { className?: string }) {
+  return (
+    <button
+      onClick={() => window.dispatchEvent(new CustomEvent("open-cheatsheet"))}
+      className={`flex items-center justify-center w-8 h-8 rounded-lg text-muted hover:text-foreground hover:bg-[rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer ${className || ""}`}
+      title="Command cheat sheet"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.3" />
+        <path d="M4.5 7L6.5 8.5L4.5 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M8 10H11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    </button>
+  );
+}
+
+function NavDropdown({
+  href,
+  label,
+  items,
+  pathname,
+  className,
+}: {
+  href: string;
+  label: string;
+  items: { href: string; label: string }[];
+  pathname: string;
+  className: string;
+}) {
+  return (
+    <div className="nav-dropdown relative flex items-center">
+      <Link href={href} className={className}>
+        {label}
+      </Link>
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 10 10"
+        fill="none"
+        className="text-muted/50 -ml-1 mt-px nav-dropdown-chevron"
+      >
+        <path d="M2.5 4L5 6.5L7.5 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+      <div className="nav-dropdown-menu absolute top-full left-0 mt-0 py-2 min-w-[180px] rounded-xl bg-white border border-border2 shadow-[0_8px_30px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] z-50">
+        {items.map((item) => {
+          const isActive = pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`block px-4 py-2.5 text-[12px] font-medium transition-colors duration-150 hover:bg-surface2 mx-1 rounded-lg ${
+                isActive ? "text-foreground" : "text-muted hover:text-foreground"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -71,34 +151,52 @@ export function Navigation() {
           </span>
         </Link>
 
-        {/* Desktop nav links */}
-        <div className="hidden sm:flex items-center flex-1 overflow-x-auto scrollbar-none">
-          {links.map((link) => {
+        {/* Desktop nav */}
+        <div className="hidden sm:flex items-center flex-1 overflow-visible">
+          {mainLinks.map((link) => {
             const isActive =
               link.href === "/"
                 ? pathname === "/"
                 : pathname.startsWith(link.href);
+            // Check if any child is active
+            const childActive = link.children?.some((c) => pathname.startsWith(c.href));
+
+            const linkClasses = `nav-link px-3.5 py-4 text-[11.5px] font-medium whitespace-nowrap tracking-[0.06em] uppercase transition-colors duration-200 ${
+              isActive || childActive
+                ? "active text-foreground"
+                : "text-muted/70 hover:text-foreground"
+            }`;
+
+            if (link.children) {
+              return (
+                <NavDropdown
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  items={link.children}
+                  pathname={pathname}
+                  className={linkClasses}
+                />
+              );
+            }
+
             return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`nav-link px-3.5 py-4 text-[11.5px] font-medium whitespace-nowrap tracking-[0.06em] uppercase transition-colors duration-200 ${
-                  isActive
-                    ? "active text-foreground"
-                    : "text-muted/70 hover:text-foreground"
-                }`}
-              >
+              <Link key={link.href} href={link.href} className={linkClasses}>
                 {link.label}
               </Link>
             );
           })}
         </div>
 
-        {/* Desktop search */}
-        <SearchButton className="hidden sm:flex ml-auto" />
+        {/* Desktop utility buttons */}
+        <div className="hidden sm:flex items-center gap-1 ml-auto">
+          <CheatSheetButton />
+          <SearchButton />
+        </div>
 
-        {/* Mobile: search + hamburger */}
+        {/* Mobile: cheatsheet + search + hamburger */}
         <div className="flex sm:hidden items-center gap-1 ml-auto">
+          <CheatSheetButton />
           <SearchButton />
           <button
             onClick={() => setMenuOpen(true)}
@@ -138,7 +236,7 @@ export function Navigation() {
           </div>
 
           <div className="flex flex-col px-6 py-4">
-            {links.map((link) => {
+            {mobileLinks.map((link) => {
               const isActive =
                 link.href === "/"
                   ? pathname === "/"
@@ -149,15 +247,31 @@ export function Navigation() {
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   className={`py-4 text-[15px] font-medium border-b border-border transition-colors duration-200 ${
+                    link.indent ? "pl-6 text-[14px]" : ""
+                  } ${
                     isActive
                       ? "text-foreground"
                       : "text-muted hover:text-foreground"
                   }`}
                 >
+                  {link.indent && <span className="text-muted/30 mr-2">—</span>}
                   {link.label}
                 </Link>
               );
             })}
+          </div>
+
+          {/* Mobile cheat sheet trigger */}
+          <div className="px-6 pt-4">
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                setTimeout(() => window.dispatchEvent(new CustomEvent("open-cheatsheet")), 100);
+              }}
+              className="glass-btn w-full rounded-xl px-4 py-3 text-sm font-medium text-center cursor-pointer"
+            >
+              Command Cheat Sheet
+            </button>
           </div>
         </div>
       )}

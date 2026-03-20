@@ -250,6 +250,27 @@ export default function ProcessPage() {
           </p>
         </header>
 
+        {/* ---- Cheat sheet callout ---- */}
+        <div className="mb-8">
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("open-cheatsheet"))}
+            className="glass-btn w-full rounded-2xl px-5 py-4 flex items-center gap-4 text-left cursor-pointer group"
+          >
+            <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-surface2 group-hover:bg-white/80 transition-colors shrink-0">
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="none" className="text-secondary">
+                <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.3" />
+                <path d="M4.5 7L6.5 8.5L4.5 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M8 10H11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+            </span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">Command Cheat Sheet</p>
+              <p className="text-[12px] text-muted">All Claude Code and Cursor commands in one place — click to copy</p>
+            </div>
+            <span className="text-muted group-hover:translate-x-0.5 transition-transform">&rarr;</span>
+          </button>
+        </div>
+
         {/* ---- Phases ---- */}
         <div className="flex flex-col gap-3">
           {PHASES.map((phase, i) => {

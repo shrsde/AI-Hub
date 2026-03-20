@@ -121,10 +121,10 @@ export function ExplainTool() {
       {/* Floating ? button */}
       <button
         onClick={activate}
-        className={`fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold shadow-lg transition-all hover:scale-105 cursor-pointer ${
+        className={`fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold shadow-lg transition-all hover:scale-105 cursor-pointer ${
           state === "active"
-            ? "bg-foreground ring-2 ring-primary ring-offset-2"
-            : "gradient-purple border border-[rgba(139,70,220,0.3)]"
+            ? "bg-foreground text-white ring-2 ring-primary ring-offset-2"
+            : "gradient-purple border border-[rgba(139,70,220,0.3)] text-foreground"
         }`}
         title={state === "active" ? "Cancel explain mode" : "Explain anything on this page"}
       >

@@ -4,6 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { ExplainTool } from "@/components/ExplainTool";
 import { SearchModal } from "@/components/SearchModal";
+import { CheatSheet } from "@/components/CheatSheet";
 
 export const metadata: Metadata = {
   title: "AI Hub — Claude for Absolute Beginners",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <Footer />
         <ExplainTool />
         <SearchModal />
+        <CheatSheet />
       </body>
     </html>
   );

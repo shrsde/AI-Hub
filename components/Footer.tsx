@@ -2,12 +2,12 @@ import Link from "next/link";
 
 const navLinks = [
   { href: "/get-started", label: "Get Started" },
-  { href: "/terms", label: "Terms" },
-  { href: "/setup", label: "Setup" },
-  { href: "/process", label: "Process" },
+  { href: "/process", label: "6-Step Process" },
+  { href: "/flows", label: "Agents" },
   { href: "/skills", label: "Skills" },
+  { href: "/terms", label: "Learn the Terms" },
+  { href: "/setup", label: "Setup" },
   { href: "/workflow", label: "Workflow" },
-  { href: "/flows", label: "Flows" },
 ];
 
 export function Footer() {

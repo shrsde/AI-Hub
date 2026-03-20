@@ -1,6 +1,69 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+function SkillsHero() {
+  const items = [
+    { text: "Bow hunting skills", check: false },
+    { text: "Computer hacking skills", check: false },
+    { text: "Claude maxxing skills", check: true },
+  ];
+
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (count >= items.length) return;
+    const timer = setTimeout(() => setCount((c) => c + 1), 700);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [count]);
+
+  return (
+    <section className="mb-10">
+      <div className="glass-card px-6 py-5 sm:px-8 sm:py-6">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <blockquote className="flex-1">
+            <p className="text-lg sm:text-xl font-extrabold tracking-tight text-foreground leading-[1.2] mb-0.5">
+              &ldquo;Girls only like guys with great skills&rdquo;
+            </p>
+            <cite className="text-[11px] text-muted not-italic">— Napoleon Dynamite</cite>
+          </blockquote>
+          <div className="flex items-center gap-4 sm:gap-5">
+            {items.slice(0, count).map((item, i) => (
+              <span
+                key={i}
+                className="flex items-center gap-1.5 animate-in"
+                style={{ animationDuration: "0.3s" }}
+              >
+                {item.check ? (
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-success">
+                    <path d="M3 7.5L5.5 10L11 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-muted/40">
+                    <path d="M4 4L10 10M10 4L4 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                )}
+                <span className={`text-[12px] font-medium ${
+                  item.check ? "text-foreground" : "text-muted/50 line-through"
+                }`}>
+                  {item.text}
+                </span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function SkillsPage() {
   return (
     <div className="mx-auto max-w-[960px] px-6 py-12">
+      {/* ---- Hero ---- */}
+      <SkillsHero />
+
       {/* ---- Header ---- */}
       <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
         What skills are
@@ -8,9 +71,14 @@ export default function SkillsPage() {
       <h1 className="mb-1 text-2xl font-extrabold leading-tight">
         Skills — teaching the AI your way
       </h1>
-      <p className="mb-10 max-w-[640px] text-sm text-muted">
+      <p className="mb-4 max-w-[640px] text-sm text-muted">
         A skill is a markdown file that teaches Claude a specific workflow. Drop one in and Claude gains a new capability instantly.
       </p>
+      <div className="info-box mb-10 max-w-[640px]">
+        <p className="text-sm">
+          <span className="font-medium text-foreground">What&apos;s a markdown file?</span> It&apos;s just a plain text file (like a .txt) with a <span className="font-mono text-[12px]">.md</span> extension. You can write one in any text editor &mdash; no special software needed. It uses simple formatting like <span className="font-mono text-[12px]"># headings</span> and <span className="font-mono text-[12px]">- bullet points</span>. If you can write a to-do list, you can write a markdown file.
+        </p>
+      </div>
 
       {/* ============================================================ */}
       {/*  1. Two types of skill                                       */}
@@ -118,43 +186,49 @@ export default function SkillsPage() {
       {/* ============================================================ */}
       <SectionHeading title="The catalogue" />
 
+      <div className="info-box mb-6">
+        <p className="text-sm">
+          These are ready-made skills you can add to your project. Each one comes with a terminal command you can copy and paste &mdash; it creates the skill file in the right folder automatically. Once it&apos;s there, Claude picks it up next time you start a session. No configuration, no setup menus.
+        </p>
+      </div>
+
       <div className="mb-10 space-y-6">
         <SkillGroup
           groupName="Document & output"
           skills={[
-            { scope: "global", name: "Technical writer", desc: "Produces clean markdown docs, READMEs, and changelogs in your preferred style" },
-            { scope: "global", name: "Blog post drafter", desc: "Turns bullet-point outlines into long-form blog posts with SEO headings" },
-            { scope: "project", name: "API doc generator", desc: "Reads route handlers and outputs OpenAPI-flavoured markdown" },
-            { scope: "project", name: "Changelog builder", desc: "Generates changelogs from commit history following keep-a-changelog format" },
+            { scope: "global", name: "Technical writer", desc: "Produces clean markdown docs, READMEs, and changelogs in your preferred style", install: "mkdir -p ~/.claude/skills && cat > ~/.claude/skills/technical-writer.md" },
+            { scope: "global", name: "Blog post drafter", desc: "Turns bullet-point outlines into long-form blog posts with SEO headings", install: "mkdir -p ~/.claude/skills && cat > ~/.claude/skills/blog-drafter.md" },
+            { scope: "project", name: "API doc generator", desc: "Reads route handlers and outputs OpenAPI-flavoured markdown", install: "mkdir -p .claude/skills && cat > .claude/skills/api-docs.md" },
+            { scope: "project", name: "Changelog builder", desc: "Generates changelogs from commit history following keep-a-changelog format", install: "mkdir -p .claude/skills && cat > .claude/skills/changelog.md" },
           ]}
         />
         <SkillGroup
           groupName="Design & frontend"
           skills={[
-            { scope: "global", name: "Tailwind component builder", desc: "Builds accessible, responsive components using your Tailwind config" },
-            { scope: "project", name: "Design-system enforcer", desc: "Validates that new UI matches your token palette, spacing scale, and type ramp" },
+            { scope: "global", name: "Tailwind component builder", desc: "Builds accessible, responsive components using your Tailwind config", install: "mkdir -p ~/.claude/skills && cat > ~/.claude/skills/tailwind-builder.md" },
+            { scope: "project", name: "Design-system enforcer", desc: "Validates that new UI matches your token palette, spacing scale, and type ramp", install: "mkdir -p .claude/skills && cat > .claude/skills/design-enforcer.md" },
           ]}
         />
         <SkillGroup
           groupName="SEO & marketing"
           skills={[
-            { scope: "global", name: "Meta-tag optimizer", desc: "Generates title, description, and OG tags following latest best practices" },
-            { scope: "global", name: "Schema markup writer", desc: "Adds JSON-LD structured data for articles, products, FAQs, and more" },
+            { scope: "global", name: "Meta-tag optimizer", desc: "Generates title, description, and OG tags following latest best practices", install: "mkdir -p ~/.claude/skills && cat > ~/.claude/skills/meta-tags.md" },
+            { scope: "global", name: "Schema markup writer", desc: "Adds JSON-LD structured data for articles, products, FAQs, and more", install: "mkdir -p ~/.claude/skills && cat > ~/.claude/skills/schema-markup.md" },
           ]}
         />
         <SkillGroup
           groupName="Database & code"
           skills={[
-            { scope: "project", name: "Migration author", desc: "Writes reversible SQL migrations following your naming and style conventions" },
-            { scope: "global", name: "Type-safe query builder", desc: "Generates Drizzle / Prisma queries with full TypeScript types" },
+            { scope: "project", name: "Migration author", desc: "Writes reversible SQL migrations following your naming and style conventions", install: "mkdir -p .claude/skills && cat > .claude/skills/migrations.md" },
+            { scope: "global", name: "Type-safe query builder", desc: "Generates Drizzle / Prisma queries with full TypeScript types", install: "mkdir -p ~/.claude/skills && cat > ~/.claude/skills/query-builder.md" },
           ]}
         />
         <SkillGroup
           groupName="Project-specific"
           skills={[
-            { scope: "project", name: "Deploy checklist", desc: "Runs your pre-deploy checks: tests, lint, build, env validation" },
-            { scope: "project", name: "PR reviewer", desc: "Reviews pull requests against your team's code-quality rubric" },
-            { scope: "project", name: "Incident responder", desc: "Reads error logs, identifies root cause, and drafts a fix PR" },
+            { scope: "project", name: "Deploy checklist", desc: "Runs your pre-deploy checks: tests, lint, build, env validation", install: "mkdir -p .claude/skills && cat > .claude/skills/deploy-checklist.md" },
+            { scope: "project", name: "PR reviewer", desc: "Reviews pull requests against your team's code-quality rubric", install: "mkdir -p .claude/skills && cat > .claude/skills/pr-reviewer.md" },
+            { scope: "project", name: "Incident responder", desc: "Reads error logs, identifies root cause, and drafts a fix PR", install: "mkdir -p .claude/skills && cat > .claude/skills/incident-responder.md" },
           ]}
         />
       </div>
@@ -350,8 +424,16 @@ function SkillGroup({
   skills,
 }: {
   groupName: string;
-  skills: { scope: "global" | "project"; name: string; desc: string }[];
+  skills: { scope: "global" | "project"; name: string; desc: string; install: string }[];
 }) {
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const copy = (cmd: string) => {
+    navigator.clipboard.writeText(cmd);
+    setCopied(cmd);
+    setTimeout(() => setCopied(null), 2000);
+  };
+
   return (
     <div>
       <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-muted">
@@ -361,19 +443,33 @@ function SkillGroup({
         {skills.map((s) => (
           <div
             key={s.name}
-            className="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3"
+            className="rounded-xl border border-border bg-surface px-4 py-3"
           >
-            <span
-              className={`flex-shrink-0 tag text-[10px] font-mono ${
-                s.scope === "global" ? "tag-secondary" : "tag-primary"
-              }`}
+            <div className="flex items-center gap-3">
+              <span
+                className={`flex-shrink-0 tag text-[10px] font-mono ${
+                  s.scope === "global" ? "tag-secondary" : "tag-primary"
+                }`}
+              >
+                {s.scope}
+              </span>
+              <span className="whitespace-nowrap text-sm font-medium text-foreground">
+                {s.name}
+              </span>
+              <span className="hidden text-xs text-muted sm:inline flex-1">{s.desc}</span>
+            </div>
+            <button
+              onClick={() => copy(s.install)}
+              className="mt-2 w-full group flex items-center gap-2 rounded-lg bg-[#1E1E2E] px-3 py-2 font-mono text-[11px] text-[#CDD6F4] text-left cursor-pointer hover:bg-[#252436] transition-colors"
             >
-              {s.scope}
-            </span>
-            <span className="whitespace-nowrap text-sm font-medium text-foreground">
-              {s.name}
-            </span>
-            <span className="hidden text-xs text-muted sm:inline">{s.desc}</span>
+              <span className="text-[#A6E3A1]">$</span>
+              <span className="flex-1 truncate">{s.install}</span>
+              <span className={`shrink-0 text-[10px] transition-colors ${
+                copied === s.install ? "text-[#A6E3A1]" : "text-[#585B70] group-hover:text-[#CDD6F4]"
+              }`}>
+                {copied === s.install ? "✓ copied" : "copy"}
+              </span>
+            </button>
           </div>
         ))}
       </div>
