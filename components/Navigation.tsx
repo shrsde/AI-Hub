@@ -210,32 +210,49 @@ export function Navigation() {
         </div>
       </div>
 
-      {/* Mobile overlay */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-[60] bg-background sm:hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+      {/* Mobile slide-out menu */}
+      <div
+        className={`fixed inset-0 z-[60] sm:hidden transition-opacity duration-300 ${
+          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-foreground/20 backdrop-blur-sm"
+          onClick={() => setMenuOpen(false)}
+        />
+
+        {/* Panel */}
+        <div
+          className={`absolute top-0 right-0 h-full w-[280px] max-w-[85vw] bg-background border-l border-border shadow-[-8px_0_30px_rgba(0,0,0,0.08)] flex flex-col transition-transform duration-300 ease-out ${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <Link
               href="/"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2.5"
+              className="flex items-center gap-2"
             >
               <Logo />
-              <span className="version-pill text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded-full">
+              <span className="version-pill text-[9px] font-semibold tracking-wide px-1.5 py-0.5 rounded-full">
                 v1.0
               </span>
             </Link>
             <button
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center w-9 h-9 rounded-lg text-foreground hover:bg-surface2 transition-colors cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-foreground hover:bg-surface2 transition-colors cursor-pointer"
               aria-label="Close menu"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
                 <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </button>
           </div>
 
-          <div className="flex flex-col px-6 py-4">
+          {/* Links */}
+          <div className="flex-1 overflow-y-auto px-5 py-3">
             {mobileLinks.map((link) => {
               const isActive =
                 link.href === "/"
@@ -246,8 +263,8 @@ export function Navigation() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`py-4 text-[15px] font-medium border-b border-border transition-colors duration-200 ${
-                    link.indent ? "pl-6 text-[14px]" : ""
+                  className={`block py-3 text-[14px] font-medium border-b border-border transition-colors duration-200 ${
+                    link.indent ? "pl-5 text-[13px]" : ""
                   } ${
                     isActive
                       ? "text-foreground"
@@ -261,20 +278,29 @@ export function Navigation() {
             })}
           </div>
 
-          {/* Mobile cheat sheet trigger */}
-          <div className="px-6 pt-4">
+          {/* Bottom actions */}
+          <div className="px-5 py-4 border-t border-border space-y-2">
             <button
               onClick={() => {
                 setMenuOpen(false);
                 setTimeout(() => window.dispatchEvent(new CustomEvent("open-cheatsheet")), 100);
               }}
-              className="glass-btn w-full rounded-xl px-4 py-3 text-sm font-medium text-center cursor-pointer"
+              className="glass-btn w-full rounded-xl px-4 py-2.5 text-[13px] font-medium text-center cursor-pointer"
             >
               Command Cheat Sheet
             </button>
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                setTimeout(() => window.dispatchEvent(new CustomEvent("open-search")), 100);
+              }}
+              className="glass-btn w-full rounded-xl px-4 py-2.5 text-[13px] font-medium text-center cursor-pointer"
+            >
+              Search
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
