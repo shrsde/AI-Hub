@@ -224,7 +224,7 @@ export function Navigation() {
 
         {/* Panel */}
         <div
-          className={`absolute top-0 right-0 h-full w-[280px] max-w-[85vw] bg-background border-l border-border shadow-[-8px_0_30px_rgba(0,0,0,0.08)] flex flex-col transition-transform duration-300 ease-out ${
+          className={`absolute top-0 right-0 h-full w-[280px] max-w-[85vw] bg-white border-l border-border shadow-[-8px_0_30px_rgba(0,0,0,0.12)] flex flex-col transition-transform duration-300 ease-out ${
             menuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
