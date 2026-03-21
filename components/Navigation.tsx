@@ -224,9 +224,10 @@ export function Navigation() {
 
         {/* Panel */}
         <div
-          className={`absolute top-0 right-0 h-full w-[280px] max-w-[85vw] bg-white border-l border-border shadow-[-8px_0_30px_rgba(0,0,0,0.12)] flex flex-col transition-transform duration-300 ease-out ${
+          className={`absolute top-0 right-0 h-full w-[280px] max-w-[85vw] border-l border-border flex flex-col transition-transform duration-300 ease-out ${
             menuOpen ? "translate-x-0" : "translate-x-full"
           }`}
+          style={{ background: "#FFFFFF", boxShadow: "-8px 0 30px rgba(0,0,0,0.12)" }}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
